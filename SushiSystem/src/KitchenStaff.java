@@ -3,7 +3,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.Set;
 
 public class KitchenStaff implements Runnable {
@@ -14,13 +13,13 @@ public class KitchenStaff implements Runnable {
 		d.addRecipeIngredient(i, 5);
 		StockedDish sd = new StockedDish(d,10);
 		StockedIngredient si = new StockedIngredient(i,30);
-		
+
 		Thread t = new Thread(new KitchenStaff());
 		Thread t2 = new Thread(new KitchenStaff());
 		t.start();
 		t2.start();
 	}
-	
+
 	public KitchenStaff() {
 
 	}
@@ -37,6 +36,36 @@ public class KitchenStaff implements Runnable {
 				e.printStackTrace();
 			}
 		}
+
+	}
+
+	private void checkDishStocks() {
+
+		System.out.println("Checking Dish Stock");
+		List<StockedDish> stockedDishes;
+		StockedDish dish;
+
+		synchronized (StockedDish.getStockedDishes()) {
+			stockedDishes = new ArrayList<StockedDish>(StockedDish.getStockedDishes());
+		}
+
+		Iterator<StockedDish> it = stockedDishes.iterator();
+
+		while (it.hasNext()) {
+
+			dish = it.next();
+			System.out.println("Checking: " + dish.getDish().getName());
+
+			if (requiresRestock(dish)) {
+
+				System.out.println("Restocking: " + dish.getDish().getName());
+
+				restock(dish);
+
+			}
+
+		}
+
 
 	}
 
@@ -98,7 +127,11 @@ public class KitchenStaff implements Runnable {
 				dish.add(1);
 			}
 
+		} else {
+			System.out.println("Not sufficient ingredients to restock!");
 		}
+		
+		dish.toggleBeingRestocked();
 
 	}
 
@@ -148,36 +181,6 @@ public class KitchenStaff implements Runnable {
 			return false;
 		}
 
-	}
-
-	private void checkDishStocks() {
-
-		System.out.println("Checking Dish Stock");
-		List<StockedDish> stockedDishes;
-		StockedDish dish;
-
-		synchronized (StockedDish.getStockedDishes()) {
-			stockedDishes = new ArrayList<StockedDish>(StockedDish.getStockedDishes());
-		}
-
-		Iterator<StockedDish> it = stockedDishes.iterator();
-
-		while (it.hasNext()) {
-			
-			dish = it.next();
-			System.out.println("Checking: " + dish.getDish().getName());
-
-			if (requiresRestock(dish)) {
-				
-				System.out.println("Restocking: " + dish.getDish().getName());
-
-				restock(dish);
-
-			}
-
-		}
-		
-		
 	}
 
 }
