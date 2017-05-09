@@ -13,6 +13,7 @@ public class KitchenStaff implements Runnable {
 		d.addRecipeIngredient(i, 5);
 		StockedDish sd = new StockedDish(d,10);
 		StockedIngredient si = new StockedIngredient(i,30);
+		si.add(60);
 
 		Thread t = new Thread(new KitchenStaff());
 		Thread t2 = new Thread(new KitchenStaff());
@@ -35,7 +36,17 @@ public class KitchenStaff implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			List<StockedDish> stockedDishes = StockedDish.getStockedDishes();
+			synchronized (stockedDishes) {
+
+				for (StockedDish d : stockedDishes) {
+
+					System.out.println(d.getNumberInStock());
+
+				}
+			}
 		}
+
 
 	}
 
@@ -103,34 +114,38 @@ public class KitchenStaff implements Runnable {
 		}
 
 		if (sufficientIngredients) {
-
+			System.out.println("SufficientIngredients!");
 			it = recipeIngredients.iterator();
 			StockedIngredient stocked;
 
 			sufficientIngredients = true;
 			while (it.hasNext()) {
 				ingredient = it.next();
-
+				System.out.println("i");
 				synchronized (ingredient) {
 					stocked = getStockedIngredient(ingredient.getIngredient());
 					synchronized(stocked) {
+						System.out.println("Old:" + stocked.getNumberInStock());
 						stocked.use(ingredient.getQuantity());
+						System.out.println("New:" + stocked.getNumberInStock());
 					}
 				}
 
 			}
-
+			System.out.println("i");
 			try {
-				Thread.sleep((new Random().nextInt(40) + 20) *1000);
-			} catch (InterruptedException e) {}
+				Thread.sleep((new Random().nextInt(40) + 20) *10); //*1000);
+			} catch (InterruptedException e) {System.out.println("!");}
+			System.out.println("ii");
 			synchronized(dish) {
+				System.out.println("Adding a dish!");
 				dish.add(1);
 			}
 
 		} else {
 			System.out.println("Not sufficient ingredients to restock!");
 		}
-		
+
 		dish.toggleBeingRestocked();
 
 	}
