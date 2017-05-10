@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a supplier of one or more ingredients in the system
  * 
@@ -5,6 +8,13 @@
  *
  */
 public class Supplier {
+	
+	private static List<Supplier> suppliers = new ArrayList<Supplier>();
+	
+	public static List<Supplier> getSuppliers() {
+		return suppliers;
+	}
+	
 
 	private String name; // The name of the supplier
 	private float distance; // The distance of the supplier from the Sushi business
@@ -18,6 +28,7 @@ public class Supplier {
 	public Supplier(String name, float distance) {
 		this.name = name;
 		this.distance = distance;
+		suppliers.add(this);
 	}
 	
 	/**
@@ -36,6 +47,20 @@ public class Supplier {
 	 */
 	public float getDistance() {
 		return this.distance;
+	}
+	
+	@Override
+	public String toString() {
+		
+		return getName();
+		
+	}
+	
+	/**
+	 * Removes this supplier from the list of suppliers if it is in the list
+	 */
+	public void remove() {
+		if ( suppliers.contains(this) ) suppliers.remove(this);
 	}
 	
 }

@@ -21,10 +21,10 @@ public class BusinessApplication extends JFrame {
 		StockedIngredient si = new StockedIngredient(i,30);
 		si.add(60);
 
-		Thread t = new Thread(new KitchenStaff());
-		Thread t2 = new Thread(new KitchenStaff());
-		t.start();
-		t2.start();
+		//Thread t = new Thread(new KitchenStaff());
+		//Thread t2 = new Thread(new KitchenStaff());
+		//t.start();
+		//t2.start();
 		
 	}
 	
