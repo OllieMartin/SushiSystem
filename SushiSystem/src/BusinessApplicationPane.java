@@ -1,9 +1,11 @@
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 
@@ -15,10 +17,10 @@ public class BusinessApplicationPane extends JPanel {
 	private DishTableModel dishTableModel; //TODO
 	private JTable ingredientTable;
 	private IngredientTableModel ingredientTableModel; //TODO
-	private AddDishPane dishPane = new AddDishPane();
-	private AddIngredientPane ingredientPane = new AddIngredientPane();
-	private AddSupplierPane supplierPane = new AddSupplierPane(ingredientPane);
 	private JButton addKitchenStaff = new JButton("Add Kitchen Staff");
+	private JButton addSupplier;
+	private JButton addIngredient;
+	private JButton addDish;
 
 
 	public BusinessApplicationPane() {
@@ -31,9 +33,40 @@ public class BusinessApplicationPane extends JPanel {
 		ingredientTable = new JTable();
 		ingredientTable.setModel(ingredientTableModel);
 		this.add(ingredientTable,1);
-		this.add(dishPane);
-		this.add(ingredientPane);
-		this.add(supplierPane);
+
+		addSupplier = new JButton("Add New Supplier");
+		addSupplier.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AddSupplierFrame();
+			}
+
+		});
+		this.add(addSupplier);
+
+		addIngredient = new JButton("Add New Ingredient");
+		addIngredient.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AddIngredientFrame();
+			}
+
+		});
+		this.add(addIngredient);
+
+		addDish = new JButton("Add New Dish");
+		addDish.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new AddDishFrame();
+			}
+
+		});
+		this.add(addDish);
+
 		this.add(addKitchenStaff);
 		addKitchenStaff.addActionListener(new ActionListener() {
 
@@ -41,7 +74,7 @@ public class BusinessApplicationPane extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				new Thread(new KitchenStaff()).start();
 			}
-			
+
 		});
 		updateTables();
 		Thread t = new Thread(new Runnable() {

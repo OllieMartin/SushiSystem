@@ -5,6 +5,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class IngredientTableModel extends AbstractTableModel {
 
+	private static final long serialVersionUID = 1L;
 	private String[] columnNames = {"Ingredient", "Stock", "Restocking Level"};
 	private List<StockedIngredient> stockedIngredients = new ArrayList<StockedIngredient>();
 	
