@@ -55,4 +55,9 @@ public class Ingredient {
 		this.supplier = newSupplier;
 	}
 	
+	@Override
+	public String toString() {
+		return getName();
+	}
+	
 }

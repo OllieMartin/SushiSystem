@@ -9,13 +9,13 @@ import java.util.NoSuchElementException;
  *
  */
 public class StockedIngredient extends StockedProduct {
-	
+
 	private static List<StockedIngredient> stockedIngredients = new ArrayList<StockedIngredient>();
-	
+
 	public static List<StockedIngredient> getStockedIngredients() {
 		return stockedIngredients;
 	}
-	
+
 	/**
 	 * Gets the StockedIngredient for a given Ingredient
 	 * 
@@ -31,7 +31,7 @@ public class StockedIngredient extends StockedProduct {
 		}
 		throw new NoSuchElementException();
 	}
-	
+
 	/**
 	 * Checks if a ingredient is being stocked by the system
 	 * 
@@ -48,7 +48,7 @@ public class StockedIngredient extends StockedProduct {
 	}
 
 	private Ingredient ingredient; // The ingredient being stocked
-	
+
 	/**
 	 * Create a new StockedIngredient with the specified ingredient and restocking level
 	 * 
@@ -60,7 +60,7 @@ public class StockedIngredient extends StockedProduct {
 		this.ingredient = ingredient;
 		stockedIngredients.add(this);
 	}
-	
+
 	/**
 	 * Get the ingredient being stored
 	 * 
@@ -69,12 +69,17 @@ public class StockedIngredient extends StockedProduct {
 	public Ingredient getIngredient() {
 		return this.ingredient;
 	}
-	
+
 	/**
 	 * Removes this ingredient from the list of stocked ingredients if it is in the list
 	 */
 	public void remove() {
 		if ( stockedIngredients.contains(this) ) stockedIngredients.remove(this);
 	}
-	
+
+	@Override
+	public String toString() {
+		return this.getIngredient().toString();
+	}
+
 }

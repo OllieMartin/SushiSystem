@@ -6,7 +6,18 @@
  */
 public enum ProductType {
 
-	INGREDIENT, // An ingredient
-	DISH // A pre-made dish
+	INGREDIENT {
+		@Override
+		public String toString() {
+			return "Ingredient";
+		}
+	}, // An ingredient
+	
+	DISH {
+		@Override
+		public String toString() {
+			return "Dish";
+		}
+	} // A pre-made dish
 	
 }

@@ -25,6 +25,13 @@ public abstract class StockedProduct {
 	}
 	
 	/**
+	 * Set the re-stocking level of the product in stock
+	 */
+	public void setRestockingLevel(int restockingLevel) {
+		this.restockingLevel = restockingLevel;
+	}
+	
+	/**
 	 * Get the current number of this product in stock
 	 * @return The number of the product in stock
 	 */

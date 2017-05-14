@@ -21,6 +21,7 @@ public class BusinessApplicationPane extends JPanel {
 	private JButton addSupplier;
 	private JButton addIngredient;
 	private JButton addDish;
+	private JButton changeRestockingLevel;
 
 
 	public BusinessApplicationPane() {
@@ -66,6 +67,17 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		this.add(addDish);
+		
+		changeRestockingLevel = new JButton("Change restocking levels");
+		changeRestockingLevel.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new ChangeRestockingLevelFrame();
+			}
+
+		});
+		this.add(changeRestockingLevel);
 
 		this.add(addKitchenStaff);
 		addKitchenStaff.addActionListener(new ActionListener() {

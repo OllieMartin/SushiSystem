@@ -87,4 +87,9 @@ public class StockedDish extends StockedProduct {
 		return this.beingRestocked;
 	}
 	
+	@Override
+	public String toString() {
+		return this.getDish().toString();
+	}
+	
 }

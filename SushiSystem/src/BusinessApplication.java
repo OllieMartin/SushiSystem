@@ -11,6 +11,7 @@ public class BusinessApplication extends JFrame {
 		SwingUtilities.invokeLater( new Runnable() { 
 			public void run() {  
 				new BusinessApplication();
+				new BusinessApplication();
 			}
 		});
 		
