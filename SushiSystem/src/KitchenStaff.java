@@ -21,8 +21,20 @@ public class KitchenStaff implements Runnable {
 		t2.start();
 	}
 
-	public KitchenStaff() {
+	private static List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 
+	public static List<KitchenStaff> getKitchenStaff() {
+		return kitchenStaff;
+	}
+
+	private List<KitchenStaffListener> kitchenListeners = new ArrayList<KitchenStaffListener>();
+
+	public KitchenStaff() {
+		kitchenStaff.add(this);
+		if (KitchenTableModel.getInstance() != null) {
+			this.addListener(KitchenTableModel.getInstance());
+		}
+		newAdded();
 	}
 
 	@Override
@@ -70,8 +82,12 @@ public class KitchenStaff implements Runnable {
 			if (requiresRestock(dish)) {
 
 				System.out.println("Restocking: " + dish.getDish().getName());
+				
+				setBusy(dish.getDish());
 
 				restock(dish);
+				
+				setFree();
 
 			}
 
@@ -196,6 +212,25 @@ public class KitchenStaff implements Runnable {
 			return false;
 		}
 
+	}
+
+	public void addListener(KitchenStaffListener toAdd) {
+		kitchenListeners.add(toAdd);
+	}
+
+	public void setBusy(Dish d) {
+		for (KitchenStaffListener l : kitchenListeners)
+			l.kitchenStaffBusy(this, d);
+	}
+
+	public void setFree() {
+		for (KitchenStaffListener l : kitchenListeners)
+			l.kitchenStaffFree(this);
+	}
+
+	public void newAdded() {
+		for (KitchenStaffListener l : kitchenListeners)
+			l.kitchenStaffAdded(this);
 	}
 
 }

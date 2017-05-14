@@ -17,6 +17,8 @@ public class BusinessApplicationPane extends JPanel {
 	private DishTableModel dishTableModel; //TODO
 	private JTable ingredientTable;
 	private IngredientTableModel ingredientTableModel; //TODO
+	private JTable kitchenTable;
+	private KitchenTableModel kitchenTableModel; //TODO
 	private JButton addKitchenStaff = new JButton("Add Kitchen Staff");
 	private JButton addSupplier;
 	private JButton addIngredient;
@@ -34,6 +36,11 @@ public class BusinessApplicationPane extends JPanel {
 		ingredientTable = new JTable();
 		ingredientTable.setModel(ingredientTableModel);
 		this.add(ingredientTable,1);
+		
+		kitchenTableModel = new KitchenTableModel();
+		kitchenTable = new JTable();
+		kitchenTable.setModel(kitchenTableModel);
+		this.add(kitchenTable);
 
 		addSupplier = new JButton("Add New Supplier");
 		addSupplier.addActionListener(new ActionListener() {
@@ -131,6 +138,8 @@ public class BusinessApplicationPane extends JPanel {
 			}
 		}
 		ingredientTableModel.fireTableDataChanged();
+		
+		kitchenTableModel.fireTableDataChanged();
 	}
 
 }
