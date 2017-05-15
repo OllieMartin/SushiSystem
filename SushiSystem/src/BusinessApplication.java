@@ -3,6 +3,8 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import comms.ServerComms;
+
 public class BusinessApplication extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -13,7 +15,7 @@ public class BusinessApplication extends JFrame {
 				new BusinessApplication();
 			}
 		});
-		
+		ServerComms sc = new ServerComms();
 		/*Dish d = new Dish("Food", "Some food", 10);
 		Ingredient i = new Ingredient("FoodPart", "Parts", new Supplier("Supplier1", 100));
 		d.addRecipeIngredient(i, 5);

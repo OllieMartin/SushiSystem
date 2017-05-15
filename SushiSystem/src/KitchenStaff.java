@@ -5,21 +5,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 //TODO More than one make a dish at a time
+//TODO Need to be able to remove kitchen staff from system (& update in model ofc)
 public class KitchenStaff implements Runnable {
-
-	public static void main(String args[]) {
-		Dish d = new Dish("Food", "Some food", 10);
-		Ingredient i = new Ingredient("FoodPart", "Parts", new Supplier("Supplier1", 100));
-		d.addRecipeIngredient(i, 5);
-		StockedDish sd = new StockedDish(d,10);
-		StockedIngredient si = new StockedIngredient(i,30);
-		si.add(60);
-
-		Thread t = new Thread(new KitchenStaff());
-		Thread t2 = new Thread(new KitchenStaff());
-		t.start();
-		t2.start();
-	}
 
 	private static List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 
@@ -45,7 +32,6 @@ public class KitchenStaff implements Runnable {
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			List<StockedDish> stockedDishes = StockedDish.getStockedDishes();
