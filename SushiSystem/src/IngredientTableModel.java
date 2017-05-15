@@ -3,11 +3,20 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class IngredientTableModel extends AbstractTableModel {
+public class IngredientTableModel extends AbstractTableModel implements IngredientListener {
 
 	private static final long serialVersionUID = 1L;
 	private String[] columnNames = {"Ingredient", "Stock", "Restocking Level"};
 	private List<StockedIngredient> stockedIngredients = new ArrayList<StockedIngredient>();
+	private boolean update;
+	
+	public boolean hasUpdate() {
+		return update;
+	}
+	
+	public void setUpdated() {
+		update = false;
+	}
 	
 	public void addIngredient(StockedIngredient i) {
 		stockedIngredients.add(i);
@@ -80,6 +89,42 @@ public class IngredientTableModel extends AbstractTableModel {
 	
 	public void clear() {
 		stockedIngredients.clear();
+	}
+
+	@Override
+	public void stockIncreased(StockedIngredient i) {
+		update = true;
+		
+	}
+
+	@Override
+	public void stockDecreased(StockedIngredient i) {
+		update = true;
+		
+	}
+
+	@Override
+	public void sufficientStock(StockedIngredient i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void outOfStock(StockedIngredient i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void ingredientAdded(StockedIngredient i) {
+		addIngredient(i);
+		update = true;
+	}
+
+	@Override
+	public void restockingLevelChanged(StockedIngredient i) {
+		update = true;
+		
 	}
 
 }

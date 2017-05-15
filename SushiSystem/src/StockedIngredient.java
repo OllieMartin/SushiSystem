@@ -15,6 +15,8 @@ public class StockedIngredient extends StockedProduct {
 	public static List<StockedIngredient> getStockedIngredients() {
 		return stockedIngredients;
 	}
+	
+	private List<IngredientListener> ingredientListeners = new ArrayList<IngredientListener>();
 
 	/**
 	 * Gets the StockedIngredient for a given Ingredient
@@ -59,6 +61,10 @@ public class StockedIngredient extends StockedProduct {
 		super(restockingLevel, ProductType.INGREDIENT);
 		this.ingredient = ingredient;
 		stockedIngredients.add(this);
+		if (BusinessApplicationPane.getIngredientTableModel() != null) {
+			this.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
+		}
+		newAdded();
 	}
 
 	/**
@@ -81,5 +87,67 @@ public class StockedIngredient extends StockedProduct {
 	public String toString() {
 		return this.getIngredient().toString();
 	}
+	
+	@Override
+	public synchronized void use(int numberToUse) {
+		super.use(numberToUse);
+		stockDecreased();
+		if (getNumberInStock() == 0) {
+			stockOut();
+		}
+	}
+	
+	@Override
+	public synchronized void add(int numberToAdd) {
+		super.add(numberToAdd);
+		stockIncreased();
+		
+		if (getNumberInStock() == getRestockingLevel()) {
+			stockSufficient();
+		}
+	}
+	
+	@Override
+	public void setRestockingLevel(int restockingLevel) {
+		super.setRestockingLevel(restockingLevel);
+		restockingLevelChanged();
+		
+	}
+	
+	public void addListener(IngredientListener toAdd) {
+		ingredientListeners.add(toAdd);
+	}
+
+	public void stockIncreased() {
+		for (IngredientListener l : ingredientListeners)
+			l.stockIncreased(this);
+	}
+
+	public void stockDecreased() {
+		for (IngredientListener l : ingredientListeners)
+			l.stockDecreased(this);
+	}
+
+	public void newAdded() {
+		for (IngredientListener l : ingredientListeners)
+			l.ingredientAdded(this);
+	}
+	
+	public void stockSufficient() {
+		for (IngredientListener l : ingredientListeners)
+			l.sufficientStock(this);
+	}
+	
+	public void stockOut() {
+		for (IngredientListener l : ingredientListeners)
+			l.outOfStock(this);
+	}
+	
+	public void restockingLevelChanged() {
+		for (IngredientListener l : ingredientListeners)
+			l.restockingLevelChanged(this);
+	}
+	
+	
 
 }

@@ -16,6 +16,8 @@ public class StockedDish extends StockedProduct {
 		return stockedDishes;
 	}
 	
+	private List<DishListener> dishListeners = new ArrayList<DishListener>();
+	
 	/**
 	 * Gets the StockedDish for a given Dish
 	 * 
@@ -61,6 +63,10 @@ public class StockedDish extends StockedProduct {
 		super(restockingLevel, ProductType.DISH);
 		this.dish = dish;
 		stockedDishes.add(this);
+		if (BusinessApplicationPane.getDishTableModel() != null) {
+			this.addListener(BusinessApplicationPane.getDishTableModel() );//TODO Move static reference location
+		}
+		newAdded();
 	}
 	
 	/**
@@ -90,6 +96,66 @@ public class StockedDish extends StockedProduct {
 	@Override
 	public String toString() {
 		return this.getDish().toString();
+	}
+	
+	@Override
+	public synchronized void use(int numberToUse) {
+		super.use(numberToUse);
+		stockDecreased();
+		if (getNumberInStock() == 0) {
+			stockOut();
+		}
+	}
+	
+	@Override
+	public synchronized void add(int numberToAdd) {
+		super.add(numberToAdd);
+		stockIncreased();
+		
+		if (getNumberInStock() == getRestockingLevel()) {
+			stockSufficient();
+		}
+	}
+	
+	@Override
+	public void setRestockingLevel(int restockingLevel) {
+		super.setRestockingLevel(restockingLevel);
+		restockingLevelChanged();
+		
+	}
+	
+	public void addListener(DishListener toAdd) {
+		dishListeners.add(toAdd);
+	}
+
+	public void stockIncreased() {
+		for (DishListener l : dishListeners)
+			l.stockIncreased(this);
+	}
+
+	public void stockDecreased() {
+		for (DishListener l : dishListeners)
+			l.stockDecreased(this);
+	}
+
+	public void newAdded() {
+		for (DishListener l : dishListeners)
+			l.dishAdded(this);
+	}
+	
+	public void stockSufficient() {
+		for (DishListener l : dishListeners)
+			l.sufficientStock(this);
+	}
+	
+	public void stockOut() {
+		for (DishListener l : dishListeners)
+			l.outOfStock(this);
+	}
+	
+	public void restockingLevelChanged() {
+		for (DishListener l : dishListeners)
+			l.restockingLevelChanged(this);
 	}
 	
 }

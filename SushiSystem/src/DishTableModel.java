@@ -3,10 +3,19 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class DishTableModel extends AbstractTableModel {
+public class DishTableModel extends AbstractTableModel implements DishListener {
 
 	private String[] columnNames = {"Dish", "Stock", "Restocking Level"};
 	private List<StockedDish> stockedDishes = new ArrayList<StockedDish>();
+	private boolean update;
+	
+	public boolean hasUpdate() {
+		return update;
+	}
+	
+	public void setUpdated() {
+		update = false;
+	}
 	
 	public void addDish(StockedDish d) {
 		stockedDishes.add(d);
@@ -79,6 +88,42 @@ public class DishTableModel extends AbstractTableModel {
 	
 	public void clear() {
 		stockedDishes.clear();
+	}
+
+	@Override
+	public void stockIncreased(StockedDish d) {
+		update = true;
+		
+	}
+
+	@Override
+	public void stockDecreased(StockedDish d) {
+		update = true;
+		
+	}
+
+	@Override
+	public void sufficientStock(StockedDish d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void outOfStock(StockedDish d) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void dishAdded(StockedDish d) {
+		addDish(d);
+		update = true;
+	}
+
+	@Override
+	public void restockingLevelChanged(StockedDish d) {
+		update = true;
+		
 	}
 
 }

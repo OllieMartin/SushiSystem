@@ -11,24 +11,30 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	private String[] columnNames = {"Kitchen Staff", "Status", "Dish Preparing"};
 	private List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 	private Map<KitchenStaff,Dish> kitchenMap = new HashMap<KitchenStaff,Dish>();
-	private static KitchenTableModel instance;
-	public static KitchenTableModel getInstance() {
-		return instance;
-	}
+	boolean update;
 	
 	public KitchenTableModel() {
 		super();
-		instance = this;
 	}
 	
-	public void addStaff(KitchenStaff k) {
+	public boolean hasUpdate() {
+		return update;
+	}
+	
+	public void setUpdated() {
+		update = false;
+	}
+	
+	private void addStaff(KitchenStaff k) {
 		kitchenMap.put(k,null);
 		kitchenStaff.add(k);
+		update = true;
 	}
 	
 	public void removeStaff(KitchenStaff k) {
 		kitchenStaff.remove(k);
 		kitchenMap.remove(k);
+		update = true;
 	}
 	
 	@Override
@@ -76,44 +82,24 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	public Class getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
-
-	/*
-	 * Don't need to implement this method unless your table's
-	 * editable.
-	 
-	public boolean isCellEditable(int row, int col) {
-		//Note that the data/cell address is constant,
-		//no matter where the cell appears onscreen.
-		if (col < 2) {
-			return false;
-		} else {
-			return true;
-		}
-	}*/
-
-	/*
-	 * Don't need to implement this method unless your table's
-	 * data can change.
-	 
-	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
-		fireTableCellUpdated(row, col);
-	}*/
 	
 	public void clear() {
 		kitchenStaff.clear();
 		kitchenMap.clear();
+		update = true;
 	}
 
 	@Override
 	public void kitchenStaffBusy(KitchenStaff k, Dish d) {
 		kitchenMap.put(k, d);
+		update = true;
 		
 	}
 
 	@Override
 	public void kitchenStaffFree(KitchenStaff k) {
 		kitchenMap.put(k, null);
+		update = true;
 		
 	}
 

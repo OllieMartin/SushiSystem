@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-
+//TODO More than one make a dish at a time
 public class KitchenStaff implements Runnable {
 
 	public static void main(String args[]) {
@@ -31,8 +31,8 @@ public class KitchenStaff implements Runnable {
 
 	public KitchenStaff() {
 		kitchenStaff.add(this);
-		if (KitchenTableModel.getInstance() != null) {
-			this.addListener(KitchenTableModel.getInstance());
+		if (BusinessApplicationPane.getKitchenTableModel() != null) {
+			this.addListener(BusinessApplicationPane.getKitchenTableModel() );//TODO Move static reference location
 		}
 		newAdded();
 	}

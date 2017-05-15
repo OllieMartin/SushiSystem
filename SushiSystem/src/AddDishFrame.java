@@ -9,8 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class AddDishFrame extends JFrame {
-
+public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
+//TODO MAKE ALL ADD FRAMES ALSO EDITABLE 
 	private static final long serialVersionUID = 1L;
 
 	JTextField nameTextbox;
