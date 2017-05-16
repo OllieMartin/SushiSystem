@@ -13,8 +13,6 @@ import javax.swing.text.StyledDocument;
 import comms.ClientComms;
 import comms.LoginMessage;
 
-//http://www.mediafire.com/file/9gn4vsbqpdwfmol/TeaParty.jar
-
 public class Client extends JFrame{
 
 	/**

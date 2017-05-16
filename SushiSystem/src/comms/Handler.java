@@ -58,12 +58,9 @@ public class Handler extends Thread {
                         }
                     } */
 				if (m.getType() == MessageType.LOGIN) {
-					System.out.println(".");
 					LoginMessage lm = (LoginMessage)m;
 					if (lm.getUser().equals("Oliver")) {
-						System.out.println("..");
 						if (lm.checkPassword("Revilo")) {
-							System.out.println("...");
 							out.writeObject(new LoginSuccessMessage());
 							login = true;
 						}

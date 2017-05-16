@@ -30,7 +30,6 @@ public class ServerComms extends Comms implements Runnable {
 
 			try {
 				while (true) {
-					System.out.println("!!!!!!!!!!");
 					new Handler(listener.accept(),this).start();
 				}
 			} catch (IOException e) {

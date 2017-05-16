@@ -50,7 +50,6 @@ public class StockedDish extends StockedProduct {
 	}
 	
 	private Dish dish; // The ingredient being stocked
-	private boolean beingRestocked; // If the ingredient is already in the process of being restocked by another staff member
 	
 	/**
 	 * Create a new StockedDish with the specified pre-made dish and restocking level
@@ -83,14 +82,6 @@ public class StockedDish extends StockedProduct {
 	 */
 	public void remove() {
 		if ( stockedDishes.contains(this) ) stockedDishes.remove(this);
-	}
-	
-	public void toggleBeingRestocked() {
-		this.beingRestocked = !this.beingRestocked;
-	}
-	
-	public boolean isBeingRestocked() {
-		return this.beingRestocked;
 	}
 	
 	@Override

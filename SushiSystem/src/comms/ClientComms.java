@@ -39,19 +39,13 @@ public class ClientComms extends Comms  {
 	}
 
 	public boolean establistConnection(String serverAddress) {
-		System.out.println("!!");
 		if (connected) return false;
 		try {
-			System.out.println("!!");
 			socket = new Socket(serverAddress,PORT); //TODO NEEDS TO BE CLOSED SOMEWHERE
-			System.out.println("!!");
 			oout = new ObjectOutputStream(socket.getOutputStream());
-			System.out.println("!!");
 			oin = new ObjectInputStream(socket.getInputStream());
 
-			System.out.println("!!");
 			connected = true;
-			System.out.println("!!");
 			listener = new Thread(new Runnable() {
 
 				@Override
@@ -73,7 +67,6 @@ public class ClientComms extends Comms  {
 						System.out.println("!-");
 
 						if (m.getType() == MessageType.LOGIN_SUCCESS) {
-							System.out.println("!!!");
 						}
 
 						/*if (inputLine.startsWith("LOGINSUCCESSFUL")) {
@@ -90,10 +83,7 @@ public class ClientComms extends Comms  {
 				}
 
 			});
-			System.out.println("!!");
-			System.out.println("!!");
 			listener.start();
-			System.out.println("!!");
 			return true;
 
 		} catch (IOException e) {

@@ -85,8 +85,8 @@ public class KitchenStaff implements Runnable {
 	private boolean requiresRestock(StockedDish dish) {
 
 		synchronized(dish) {
-			if (dish.getNumberInStock() < dish.getRestockingLevel() && !dish.isBeingRestocked() ) {
-				dish.toggleBeingRestocked();
+			if (dish.getNumberInStock() + dish.getNumberBeingRestocked() < dish.getRestockingLevel() ) {
+				dish.incrementNumberBeingRestocked(1);
 				return true;
 			}
 			return false;
@@ -148,7 +148,7 @@ public class KitchenStaff implements Runnable {
 			System.out.println("Not sufficient ingredients to restock!");
 		}
 
-		dish.toggleBeingRestocked();
+		dish.decrementNumberBeingRestocked(1);
 
 	}
 
