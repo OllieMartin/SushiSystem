@@ -1,11 +1,8 @@
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -23,17 +20,17 @@ public class BusinessApplicationPane extends JPanel {
 	private JButton addDish;
 	private JButton changeRestockingLevel;
 	private JTabbedPane tabs;
-	
+
 	private static KitchenTableModel kitchenTableModel; //TODO
 	public static KitchenTableModel getKitchenTableModel() {
 		return kitchenTableModel;
 	}
-	
+
 	private static DishTableModel dishTableModel; //TODO
 	public static DishTableModel getDishTableModel() {
 		return dishTableModel;
 	}
-	
+
 	private static IngredientTableModel ingredientTableModel; //TODO
 	public static IngredientTableModel getIngredientTableModel() {
 		return ingredientTableModel;
@@ -52,7 +49,7 @@ public class BusinessApplicationPane extends JPanel {
 		ingredientTable = new JTable();
 		ingredientTable.setModel(ingredientTableModel);
 		tabs.addTab("Ingredients",ingredientTable);
-		
+
 		kitchenTableModel = new KitchenTableModel();
 		kitchenTable = new JTable();
 		kitchenTable.setModel(kitchenTableModel);
@@ -90,7 +87,7 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		this.add(addDish);
-		
+
 		changeRestockingLevel = new JButton("Change restocking levels");
 		changeRestockingLevel.addActionListener(new ActionListener() {
 
@@ -112,7 +109,7 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		updateTables();
-		
+
 		Thread t = new Thread(new Runnable() {
 
 			@Override
@@ -136,17 +133,17 @@ public class BusinessApplicationPane extends JPanel {
 			dishTableModel.fireTableDataChanged();
 			dishTableModel.setUpdated();
 		}
-		
+
 		if (ingredientTableModel.hasUpdate()) {
 			ingredientTableModel.fireTableDataChanged();
 			ingredientTableModel.setUpdated();
 		}
-		
+
 		if (kitchenTableModel.hasUpdate()) {
 			kitchenTableModel.fireTableDataChanged();
 			kitchenTableModel.setUpdated();
 		}
-		
+
 	}
 
 }

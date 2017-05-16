@@ -2,7 +2,6 @@ package comms;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.net.ServerSocket;
 import java.util.HashSet;
 
@@ -50,7 +49,7 @@ public class ServerComms extends Comms implements Runnable {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 	}
 
 }

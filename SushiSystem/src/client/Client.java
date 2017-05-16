@@ -2,8 +2,6 @@
 package client;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
@@ -29,7 +27,7 @@ public class Client extends JFrame{
 	public StyledDocument doc = messageArea.getStyledDocument();
 
 	public Client() {
-		
+
 		super("Sushi System Client");
 		System.out.println("!");
 		comms = new ClientComms(this);

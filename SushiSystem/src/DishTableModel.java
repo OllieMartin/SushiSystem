@@ -5,6 +5,8 @@ import javax.swing.table.AbstractTableModel;
 
 public class DishTableModel extends AbstractTableModel implements DishListener {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String[] columnNames = {"Dish", "Stock", "Restocking Level"};
 	private List<StockedDish> stockedDishes = new ArrayList<StockedDish>();
 	private boolean update;
@@ -59,7 +61,7 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 		}
 	}
 
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
 		return getValueAt(0, c).getClass();
 	}
 

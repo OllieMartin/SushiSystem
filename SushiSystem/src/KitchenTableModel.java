@@ -12,31 +12,31 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	private List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 	private Map<KitchenStaff,Dish> kitchenMap = new HashMap<KitchenStaff,Dish>();
 	boolean update;
-	
+
 	public KitchenTableModel() {
 		super();
 	}
-	
+
 	public boolean hasUpdate() {
 		return update;
 	}
-	
+
 	public void setUpdated() {
 		update = false;
 	}
-	
+
 	private void addStaff(KitchenStaff k) {
 		kitchenMap.put(k,null);
 		kitchenStaff.add(k);
 		update = true;
 	}
-	
+
 	public void removeStaff(KitchenStaff k) {
 		kitchenStaff.remove(k);
 		kitchenMap.remove(k);
 		update = true;
 	}
-	
+
 	@Override
 	public int getRowCount() {
 		return kitchenStaff.size();
@@ -49,16 +49,16 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		
+
 		KitchenStaff staff;
-		
+
 		staff = kitchenStaff.get(rowIndex);
-		
+
 		//TODO EXCEPTIONS
 		if (staff == null) {
 			return null;
 		}
-		
+
 		switch (columnIndex) {
 		case 0:
 			return "STAFF"; // ID
@@ -79,10 +79,10 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 		}
 	}
 
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
-	
+
 	public void clear() {
 		kitchenStaff.clear();
 		kitchenMap.clear();
@@ -93,20 +93,20 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	public void kitchenStaffBusy(KitchenStaff k, Dish d) {
 		kitchenMap.put(k, d);
 		update = true;
-		
+
 	}
 
 	@Override
 	public void kitchenStaffFree(KitchenStaff k) {
 		kitchenMap.put(k, null);
 		update = true;
-		
+
 	}
 
 	@Override
 	public void kitchenStaffAdded(KitchenStaff k) {
 		addStaff(k);
-		
+
 	}
 
 }
