@@ -2,10 +2,11 @@ package comms;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.util.HashSet;
 
-public class ServerComms extends Comms {
+public class ServerComms extends Comms implements Runnable {
 
 	protected final int PORT = 25410; //Connection port to server
 	protected HashSet<String> clientNames = new HashSet<String>(); //All of the connected user names (duplicates not allowed)
@@ -16,7 +17,8 @@ public class ServerComms extends Comms {
 	}
 
 	@Override
-	public void sendMessage(String message) {
+	public boolean sendMessage(Message m) {
+		return false;
 		// TODO Auto-generated method stub
 
 	}
@@ -29,6 +31,7 @@ public class ServerComms extends Comms {
 
 			try {
 				while (true) {
+					System.out.println("!!!!!!!!!!");
 					new Handler(listener.accept(),this).start();
 				}
 			} catch (IOException e) {

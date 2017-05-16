@@ -1,7 +1,7 @@
 package comms;
 
-public abstract class Comms implements Runnable {
-
-	public abstract void sendMessage(String message);
+public abstract class Comms {
+	
+	public abstract boolean sendMessage(Message m);
 	
 }

@@ -1,102 +1,118 @@
 package comms;
 
-import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 
 import client.Client;
 
-public class ClientComms extends Comms implements Runnable {
+public class ClientComms extends Comms  {
 
-	protected BufferedReader in;
-	protected PrintWriter out;
+	protected ObjectOutputStream oout;
+	protected ObjectInputStream oin;
 	Client c;
+	private boolean connected;
+	private static final int PORT = 25410;
+	Socket socket;
+	Thread listener;
+
 
 	@Override
-	public void sendMessage(String message) {
-		out.println(message);
-
+	public boolean sendMessage(Message m) {
+		try {
+			oout.writeObject(m);
+			return true;
+		} catch (IOException e) {
+			System.out.println("FAIL");
+			return false;
+		}
 	}
 
 	public ClientComms(Client c) {
 		this.c = c;
+		connected = false;
 	}
 
-	@Override
-	public void run() {
-		SimpleAttributeSet keyWord = new SimpleAttributeSet();
-		StyleConstants.setForeground(keyWord, Color.BLUE);
-		StyleConstants.setBold(keyWord, true);
+	public boolean establishConnection() {
+		return establistConnection("localhost");
+	}
 
-		String serverAddress = "localhost"; //getServerAddress();
-		Socket socket;
+	public boolean establistConnection(String serverAddress) {
+		System.out.println("!!");
+		if (connected) return false;
 		try {
-			socket = new Socket(serverAddress, 25410);
-		
-		//Define the input and output streams
-		try {
-			in = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			out = new PrintWriter(socket.getOutputStream(), true);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+			System.out.println("!!");
+			socket = new Socket(serverAddress,PORT); //TODO NEEDS TO BE CLOSED SOMEWHERE
+			System.out.println("!!");
+			oout = new ObjectOutputStream(socket.getOutputStream());
+			System.out.println("!!");
+			oin = new ObjectInputStream(socket.getInputStream());
+			
+			System.out.println("!!");
+			connected = true;
+			System.out.println("!!");
+			listener = new Thread(new Runnable() {
 
-		// Process all messages from server, according to the protocol.
-		while (true) {
-			String line;
-			try {
-				line = in.readLine();
+				@Override
+				public void run() {
+					Message m;
+					while (connected) {
 
-				if (line.startsWith("ENTERNAME")) {
-					out.println("testClient");
-					//Send the result of the getName dialogue box
-				} else if (line.startsWith("NAMEACCEPTED")) {
-					c.textField.setEditable(true);
-					//If the name is accepted then allow them to type a message
-				} else if (line.startsWith("INFO")) {
-					//messageArea.append("INFO: " + line.substring(5) + "\n");
-					try {
-						c.doc.insertString(c.doc.getLength(), "INFO: " + line.substring(5) + "\n", keyWord);
-					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						try {
+							m = (Message)oin.readObject();
+						} catch (IOException e) {
+							connected = false;
+							return;
+						} catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							return;
+						}
+						
+						System.out.println("!-");
+						
+						if (m.getType() == MessageType.LOGIN_SUCCESS) {
+							System.out.println("!!!");
+						}
+
+						/*if (inputLine.startsWith("LOGINSUCCESSFUL")) {
+							System.out.println("Login success!");
+						} else if (inputLine.startsWith("LOGINFAILURE")) {
+
+						} else if (inputLine.startsWith("LOGOUTSUCCESSFUL")) {
+
+						} else if (inputLine.startsWith("ORDERSUCCESSFUL")) {
+
+						}*/
 					}
-				} else if (line.startsWith("MESSAGE")) {
-					//messageArea.append(line.substring(8) + "\n");
-					try {
-						c.doc.insertString(c.doc.getLength(), line.substring(8) + "\n", null);
-					} catch (BadLocationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					//Toolkit.getDefaultToolkit().beep();
-					//Add new message to the chat box
+
 				}
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
-		
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} //Create a new socket to the server
 
+			});
+			System.out.println("!!");
+			System.out.println("!!");
+			listener.start();
+			System.out.println("!!");
+			return true;
+
+		} catch (IOException e) {
+			if (socket != null) { try { socket.close(); } catch (IOException e2) {/* Empty */} };
+			connected = false;
+			return false;
+		}
+
+	}
+
+	public void terminateConnection() {
+		if (socket != null) {
+			try { socket.close(); } catch (IOException e) {/* Empty */}
+		}
+		connected = false;
 	}
 
 }

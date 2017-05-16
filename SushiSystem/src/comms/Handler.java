@@ -3,6 +3,8 @@ package comms;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
@@ -15,9 +17,10 @@ public class Handler extends Thread {
 	
         protected String name;
         protected Socket socket;
-        protected BufferedReader in;
-        protected PrintWriter out;
+        protected ObjectInputStream in;
+        protected ObjectOutputStream out;
         protected ServerComms server;
+        Message m;
 
         public Handler(Socket socket, ServerComms server) {
             this.socket = socket;
@@ -31,60 +34,55 @@ public class Handler extends Thread {
                 // Create character streams for the socket.
             	
             	//Input stream
-                in = new BufferedReader(new InputStreamReader(
-                    socket.getInputStream()));
+                in = new ObjectInputStream(
+                    socket.getInputStream());
                 //Output PrintWriter
-                out = new PrintWriter(socket.getOutputStream(), true);
+                out = new ObjectOutputStream(socket.getOutputStream());
 
                 // Keep requesting the connection to enter a name
                 // NB: We must lock the set of names while doing this!
                 
-                boolean nameAdded = false;
-                while (!nameAdded) {
-                    out.println("ENTERNAME"); //Send ENTERNAME request to client
-                    name = in.readLine(); //Set name to the next line of the input stream
-                    if (name == null) {
+                boolean login = false;
+                while (!login) {
+                	out.writeObject(new LoginRequestMessage());
+                   
+                	m = (Message)in.readObject(); //Set name to the next line of the input stream
+                    if (m == null) {
                         return; //If the connected is terminated and the input stream no longer gets a result then terminate this runnable
                     }
+                    
                     //Lock the set of client names
-                    synchronized (server.clientNames) {
+                   /* synchronized (server.clientNames) {
                         if (!server.clientNames.contains(name)) {
                         	//If it is a unique name then add it to the list and exit this loop
                             server.clientNames.add(name);
                             nameAdded = true;
                         }
+                    } */
+                    if (m.getType() == MessageType.LOGIN) {
+                    	System.out.println(".");
+                    	LoginMessage lm = (LoginMessage)m;
+                    	if (lm.getUser().equals("Oliver")) {
+                    		System.out.println("..");
+                    		if (lm.checkPassword("Revilo")) {
+                    			System.out.println("...");
+                    			out.writeObject(new LoginSuccessMessage());
+                    			login = true;
+                    		}
+                    	}
                     }
                 }
 
                 // The user is now accepted by our system
                 // Add a new printWriter for this client to the hashset so we can send messages
                 
-                out.println("NAMEACCEPTED"); //Send NAMEACCEPTED command
-                server.clientWriters.add(out); //Add the print writer
-                
-                //Report the client has connected
-                for (PrintWriter writer : server.clientWriters) {
-                	writer.println("INFO " + name + " has joined the chat!");
-                }
-            	System.out.println("INFO: " + name + " has joined the chat!");
-                
-                // Accept messages from this client and broadcast them.
-                // Ignore other clients that cannot be broadcasted to.
-                
-                while (true) {
-                    String input = in.readLine();
-                    if (input == null) {
-                        return; //If the input stream no longer receives a result then the connection is lost and terminate this runnable
-                    }
-                    //For all the print writers in the list send the MESSAGE command with their message
-                    for (PrintWriter writer : server.clientWriters) {
-                        writer.println("MESSAGE " + name + ": " + input);
-                    }
-                    System.out.println(name + ": " + input);
-                }
+        
             } catch (IOException e) {
                 System.out.println(e);
-            } finally {
+            } catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally {
                 // This client is going down!  Remove its name and its print
                 // writer from the sets, and close its socket.
                 if (name != null) {
