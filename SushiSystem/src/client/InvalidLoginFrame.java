@@ -15,12 +15,12 @@ public class InvalidLoginFrame extends LoginFrame {
 
 	public InvalidLoginFrame(Client c) {
 		super(c);
-		this.setLayout(new GridLayout(4,1));
+		this.setLayout(new GridLayout(5,1));
 		invalid = new JLabel("INVALID CREDENTIALS, TRY AGAIN",SwingConstants.CENTER);
 		invalid.setForeground(Color.RED);
 		this.add(invalid,0);
-		this.setMinimumSize(new Dimension(300,200));
-		this.setPreferredSize(new Dimension(300,200));
+		this.setMinimumSize(new Dimension(300,250));
+		this.setPreferredSize(new Dimension(300,250));
 	}
 
 }

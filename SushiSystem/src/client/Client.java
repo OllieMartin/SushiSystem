@@ -5,6 +5,7 @@ import java.awt.Dimension;
 
 import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -16,25 +17,34 @@ import comms.RegistrationMessage;
 
 public class Client extends JFrame{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
 	ClientComms comms;
 	public JTextField textField = new JTextField(40);
 	protected JTextPane messageArea = new JTextPane();
 	public StyledDocument doc = messageArea.getStyledDocument();
+	boolean connected;
+	
+	public void setConnected(boolean status) {
+		connected = status;
+	}
+	public boolean isConnected() {
+		return connected;
+	}
 
 	public Client() {
 
 		super("Sushi System Client");
 		
-		RegistrationFrame login = new RegistrationFrame(this);
+		new LoginFrame(this);
 		
 		comms = new ClientComms(this);
 
 		if (!comms.establishConnection()) {
 			System.out.println("ERROR CONNECTING!");
+			connected = false;
+		} else {
+			connected = true;
 		}
 		//comms.sendMessage(new LoginMessage("Oliver","Revilo"));
 		// Layout GUI
@@ -60,20 +70,61 @@ public class Client extends JFrame{
 	
 	public void attemptLogin(String user, char[] password) {
 		
-		comms.sendMessage(new LoginMessage(user,new String(password)));
+		if (connected) {
+			comms.sendMessage(new LoginMessage(user,new String(password)));
+		} else {
+			if (!comms.establishConnection()) {
+				connected = false;
+				JOptionPane.showMessageDialog(null, "Could not connected to server", "Information", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				connected = true;
+				comms.sendMessage(new LoginMessage(user,new String(password)));
+			}
+		}
 		
 	}
 	
 	public void attemptRegister(String user, char[] password, String address, String postcode) {
 		
-		comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
+		if (connected) {
+			comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
+		} else {
+			if (!comms.establishConnection()) {
+				connected = false;
+				JOptionPane.showMessageDialog(null, "Could not connected to server", "Information", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				connected = true;
+				comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
+			}
+			
+		}
+	}
+	
+	public void requestRegister() {
 		
+		new RegistrationFrame(this);
+		
+	}
+	
+	public void successfulLogin() {
+		this.setVisible(true);
+	}
+	
+	public void successfulRegistration() {
+		new LoginFrame(this);
+	}
+	
+	public void failedLogin() {
+		new InvalidLoginFrame(this);
+	}
+	
+	public void invalidRegistration() {
+		new InvalidRegistrationFrame(this);
 	}
 
 	public static void main(String[] args) throws Exception {
 		Client client = new Client(); //Create a new chat client
 		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //When JFrame closed, close application
-		client.setVisible(true); //Make the JFrame visible
 	}
 
 }

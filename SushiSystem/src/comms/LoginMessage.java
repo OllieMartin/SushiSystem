@@ -22,5 +22,9 @@ public class LoginMessage extends Message {
 		}
 		return false;
 	}
+	
+	public String getPassword() {
+		return this.password; //TODO?!
+	}
 
 }

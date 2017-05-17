@@ -19,10 +19,12 @@ public class LoginFrame extends JFrame {
 	private JPasswordField password;
 	private JButton login;
 	private Client client;
+	private JButton register;
 
 	public LoginFrame (Client c) {
 		
 		this.client = c;
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		user = new JTextField();
 		user.setBorder(BorderFactory.createTitledBorder("Enter username"));
 		password = new JPasswordField();
@@ -41,12 +43,23 @@ public class LoginFrame extends JFrame {
 			}
 			
 		});
-		this.setLayout(new GridLayout(3,1));
+		register = new JButton("Register a new account");
+		register.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				client.requestRegister();
+				setVisible(false);
+			}
+			
+		});
+		this.setLayout(new GridLayout(4,1));
 		this.add(user);
 		this.add(password);
 		this.add(login);
-		this.setMinimumSize(new Dimension(300,150));
-		this.setPreferredSize(new Dimension(300,150));
+		this.add(register);
+		this.setMinimumSize(new Dimension(300,200));
+		this.setPreferredSize(new Dimension(300,200));
 		this.setVisible(true);
 		
 	}

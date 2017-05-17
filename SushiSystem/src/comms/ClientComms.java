@@ -58,6 +58,7 @@ public class ClientComms extends Comms  {
 							m = (Message)oin.readObject();
 						} catch (IOException e) {
 							connected = false;
+							c.setConnected(false);
 							return;
 						} catch (ClassNotFoundException e) {
 							// TODO Auto-generated catch block
@@ -66,7 +67,16 @@ public class ClientComms extends Comms  {
 						}
 
 						if (m.getType() == MessageType.LOGIN_SUCCESS) {
-							System.out.println("SUCCESSFUL LOGIN");
+							c.successfulLogin();
+						}
+						if (m.getType() == MessageType.REGISTRATION_SUCCESS) {
+							c.successfulRegistration();
+						}
+						if (m.getType() == MessageType.REGISTRATION_FAILURE) {
+							c.invalidRegistration();
+						}
+						if (m.getType() == MessageType.LOGIN_FAILURE) {
+							c.failedLogin();
 						}
 
 						/*if (inputLine.startsWith("LOGINSUCCESSFUL")) {
@@ -89,6 +99,7 @@ public class ClientComms extends Comms  {
 		} catch (IOException e) {
 			if (socket != null) { try { socket.close(); } catch (IOException e2) {/* Empty */} };
 			connected = false;
+			c.setConnected(false);
 			return false;
 		}
 
@@ -99,6 +110,7 @@ public class ClientComms extends Comms  {
 			try { socket.close(); } catch (IOException e) {/* Empty */}
 		}
 		connected = false;
+		c.setConnected(false);
 	}
 
 }

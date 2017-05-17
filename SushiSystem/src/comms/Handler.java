@@ -65,12 +65,12 @@ public class Handler extends Thread {
 				if (m.getType() == MessageType.LOGIN) {
 					System.out.println("Login detected");
 					LoginMessage lm = (LoginMessage)m;
-					if (lm.getUser().equals("Oliver")) {
-						if (lm.checkPassword("Revilo")) {
-							out.writeObject(new LoginSuccessMessage());
-							login = true;
-							System.out.println("success login");
-						}
+					if (am.loginUser(lm.getUser(), lm.getPassword())) {
+						out.writeObject(new LoginSuccessMessage());
+						login = true;
+						name = lm.getUser();
+					} else {
+						out.writeObject(new LoginFailureMessage());
 					}
 				}
 				if (m.getType() == MessageType.REGISTRATION) {
@@ -84,6 +84,8 @@ public class Handler extends Thread {
 					}
 				}
 			}
+			
+			System.out.println("LOGGED IN MODE");
 
 			// The user is now accepted by our system
 			// Add a new printWriter for this client to the hashset so we can send messages
@@ -95,6 +97,7 @@ public class Handler extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
+			am.logoutUser(name);
 			// This client is going down!  Remove its name and its print
 			// writer from the sets, and close its socket.
 			if (name != null) {

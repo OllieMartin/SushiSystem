@@ -40,6 +40,7 @@ public class RegistrationFrame extends JFrame {
 	public RegistrationFrame(Client c) {
 
 		super("Registration - You must fill in ALL fields");
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.client = c;
 		user = new JTextField();
 		user.setBorder(BorderFactory.createTitledBorder("Enter username"));
