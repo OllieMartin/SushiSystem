@@ -1,3 +1,4 @@
+package business;
 /**
  * Represents an ingredient being used in a recipe along with its quantity
  * 

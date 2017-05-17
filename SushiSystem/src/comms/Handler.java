@@ -6,6 +6,8 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+import business.AccountManager;
+
 /**
  * A handler class which will create threads for each client connection
  * @author Oliver
@@ -18,11 +20,13 @@ public class Handler extends Thread {
 	protected ObjectInputStream in;
 	protected ObjectOutputStream out;
 	protected ServerComms server;
+	private AccountManager am;
 	Message m;
 
-	public Handler(Socket socket, ServerComms server) {
+	public Handler(Socket socket, ServerComms server, AccountManager am) {
 		this.socket = socket;
 		this.server = server;
+		this.am = am;
 	}
 	//Set the socket, and the connected server class
 
@@ -57,13 +61,26 @@ public class Handler extends Thread {
                             nameAdded = true;
                         }
                     } */
+				System.out.println("Recevied Message");
 				if (m.getType() == MessageType.LOGIN) {
+					System.out.println("Login detected");
 					LoginMessage lm = (LoginMessage)m;
 					if (lm.getUser().equals("Oliver")) {
 						if (lm.checkPassword("Revilo")) {
 							out.writeObject(new LoginSuccessMessage());
 							login = true;
+							System.out.println("success login");
 						}
+					}
+				}
+				if (m.getType() == MessageType.REGISTRATION) {
+					System.out.println("Registration detected");
+					RegistrationMessage rm = (RegistrationMessage)m;
+					if (am.registerUser(rm.getUser(), rm.getPassword(), rm.getAddress(), rm.getPostcode())) {
+						out.writeObject(new RegistrationSuccessMessage());
+						System.out.println("Successful Registration");
+					} else {
+						out.writeObject(new RegistrationFailureMessage());
 					}
 				}
 			}

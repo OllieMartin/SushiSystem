@@ -1,3 +1,4 @@
+package business;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
@@ -15,7 +16,7 @@ public class BusinessApplication extends JFrame {
 				new BusinessApplication();
 			}
 		});
-		ServerComms sc = new ServerComms();
+		
 		/*Dish d = new Dish("Food", "Some food", 10);
 		Ingredient i = new Ingredient("FoodPart", "Parts", new Supplier("Supplier1", 100));
 		d.addRecipeIngredient(i, 5);
@@ -36,11 +37,21 @@ public class BusinessApplication extends JFrame {
 	private static final int MINIMUM_HEIGHT = 300; // Minimum height for the main window pixels
 	
 	private BusinessApplicationPane mainPane;
+	private AccountManager am;
+	private ServerComms sc;
+	
+	public AccountManager getAccountManager() {
+		return this.am;
+	}
 	
 	public BusinessApplication() {
 		
 		super("Sushi System - Business Application");
 
+		sc = new ServerComms(this);
+		new Thread(sc).start();
+		am = new AccountManager();
+		
 		mainPane = new BusinessApplicationPane();
 		this.add(mainPane);
 

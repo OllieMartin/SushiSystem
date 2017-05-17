@@ -1,46 +1,49 @@
+package business;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
-//TODO MAKE ALL ADD FRAMES ALSO EDITABLE 
+public class AddIngredientFrame extends JFrame {
+
 	private static final long serialVersionUID = 1L;
 
 	JTextField nameTextbox;
 	JLabel nameLabel;
-	JTextField descTextbox;
-	JLabel descLabel;
-	JTextField priceTextbox;
-	JLabel priceLabel;
+	JTextField unitTextbox;
+	JLabel unitLabel;
+	JComboBox<Supplier> supplierComboBox;
 	JTextField restockingTextbox;
 	JLabel restockingLabel;
 	JButton addButton;
 
-	public AddDishFrame() {
+	public AddIngredientFrame() {
 
-		super("Add New Dish");
+		super("Add New Ingredient");
 
 		this.setMinimumSize(new Dimension(400,300));
 		this.setMaximumSize(new Dimension(400,300));
 
-		nameLabel = new JLabel("Dish Name");
+		nameLabel = new JLabel("Ingredient Name");
 		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameTextbox = new JTextField();
 
-		descLabel =  new JLabel("Dish Description");
-		descLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		descTextbox = new JTextField();
+		unitLabel = new JLabel("Ingredient Unit");
+		unitLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		unitTextbox = new JTextField();
 
-		priceLabel = new JLabel("Dish Price");
-		priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		priceTextbox = new JTextField();
+		supplierComboBox = new JComboBox<Supplier>();
+		//TODO THREAD SAFETY
+		for (Supplier s : Supplier.getSuppliers()) {
+			supplierComboBox.addItem(s);
+		}
 
 		restockingLabel = new JLabel("Restocking Level");
 		restockingLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -48,14 +51,12 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 
 		addButton = new JButton("Add");
 
-		this.setLayout(new GridLayout(9,1));
-
+		this.setLayout(new GridLayout(8,1));
 		this.add(nameLabel);
 		this.add(nameTextbox);
-		this.add(descLabel);
-		this.add(descTextbox);
-		this.add(priceLabel);
-		this.add(priceTextbox);
+		this.add(unitLabel);
+		this.add(unitTextbox);
+		this.add(supplierComboBox);
 		this.add(restockingLabel);
 		this.add(restockingTextbox);
 		this.add(addButton);
@@ -64,9 +65,9 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				Dish d = new Dish(nameTextbox.getText(), descTextbox.getText(), Float.parseFloat(priceTextbox.getText()));
-				new StockedDish(d, Integer.parseInt(restockingTextbox.getText()));
+				//TODO VALIDATION
+				Ingredient i = new Ingredient(nameTextbox.getText(), unitTextbox.getText(), (Supplier)supplierComboBox.getSelectedItem());
+				new StockedIngredient(i, Integer.parseInt(restockingTextbox.getText()));
 				dispose();
 			}
 

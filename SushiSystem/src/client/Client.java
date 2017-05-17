@@ -12,6 +12,7 @@ import javax.swing.text.StyledDocument;
 
 import comms.ClientComms;
 import comms.LoginMessage;
+import comms.RegistrationMessage;
 
 public class Client extends JFrame{
 
@@ -27,14 +28,15 @@ public class Client extends JFrame{
 	public Client() {
 
 		super("Sushi System Client");
-		System.out.println("!");
+		
+		RegistrationFrame login = new RegistrationFrame(this);
+		
 		comms = new ClientComms(this);
-		System.out.println("!");
+
 		if (!comms.establishConnection()) {
 			System.out.println("ERROR CONNECTING!");
 		}
-		comms.sendMessage(new LoginMessage("Oliver","Revilo"));
-		System.out.println("!");
+		//comms.sendMessage(new LoginMessage("Oliver","Revilo"));
 		// Layout GUI
 		textField.setEditable(false);
 		textField.setMaximumSize(
@@ -52,9 +54,20 @@ public class Client extends JFrame{
 		p.setPreferredSize(new Dimension(200,200));
 		this.getContentPane().add(p, "South");
 		this.pack();
-		System.out.println("!");
 		// Add Listeners
 
+	}
+	
+	public void attemptLogin(String user, char[] password) {
+		
+		comms.sendMessage(new LoginMessage(user,new String(password)));
+		
+	}
+	
+	public void attemptRegister(String user, char[] password, String address, String postcode) {
+		
+		comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
+		
 	}
 
 	public static void main(String[] args) throws Exception {

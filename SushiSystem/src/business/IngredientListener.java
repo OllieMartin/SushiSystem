@@ -1,3 +1,4 @@
+package business;
 public interface IngredientListener {
 
 	void stockIncreased(StockedIngredient i);

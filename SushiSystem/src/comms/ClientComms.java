@@ -22,6 +22,7 @@ public class ClientComms extends Comms  {
 	public boolean sendMessage(Message m) {
 		try {
 			oout.writeObject(m);
+			System.out.println("message sent");
 			return true;
 		} catch (IOException e) {
 			System.out.println("FAIL");
@@ -64,9 +65,8 @@ public class ClientComms extends Comms  {
 							return;
 						}
 
-						System.out.println("!-");
-
 						if (m.getType() == MessageType.LOGIN_SUCCESS) {
+							System.out.println("SUCCESSFUL LOGIN");
 						}
 
 						/*if (inputLine.startsWith("LOGINSUCCESSFUL")) {

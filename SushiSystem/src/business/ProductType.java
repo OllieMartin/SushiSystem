@@ -1,3 +1,4 @@
+package business;
 /**
  * Represents the types of products held in company storage
  * 

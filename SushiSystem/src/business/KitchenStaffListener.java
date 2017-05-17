@@ -1,3 +1,4 @@
+package business;
 public interface KitchenStaffListener {
 
 	void kitchenStaffBusy(KitchenStaff k, Dish d);

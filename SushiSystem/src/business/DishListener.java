@@ -1,3 +1,4 @@
+package business;
 public interface DishListener {
 
 	void stockIncreased(StockedDish d);

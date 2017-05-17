@@ -1,3 +1,4 @@
+package business;
 /**
  * Represents an ingredient to be made into Sushi in the system
  * 

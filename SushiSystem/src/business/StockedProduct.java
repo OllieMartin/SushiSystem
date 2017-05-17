@@ -1,3 +1,4 @@
+package business;
 /**
  * Represents a product held in stock by the company
  * 
