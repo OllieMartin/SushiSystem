@@ -65,29 +65,35 @@ public class ClientComms extends Comms  {
 							e.printStackTrace();
 							return;
 						}
-
-						if (m.getType() == MessageType.LOGIN_SUCCESS) {
+						System.out.println("Got a message!");
+						switch (m.getType()) {
+						case DISH_STOCK:
+							DishStockMessage dsm = (DishStockMessage)m;
+							System.out.println("Got a dish stock message!");
+							c.updateDishStock(dsm.getDishes());
+							break;
+						case LOGIN:
+							break;
+						case LOGIN_SUCCESS:
 							c.successfulLogin();
-						}
-						if (m.getType() == MessageType.REGISTRATION_SUCCESS) {
-							c.successfulRegistration();
-						}
-						if (m.getType() == MessageType.REGISTRATION_FAILURE) {
-							c.invalidRegistration();
-						}
-						if (m.getType() == MessageType.LOGIN_FAILURE) {
+							break;
+						case LOGIN_FAILURE:
 							c.failedLogin();
+							break;
+						case LOGIN_REQUEST:
+							break;
+						case REGISTRATION:
+							break;
+						case REGISTRATION_FAILURE:
+							c.invalidRegistration();
+							break;
+						case REGISTRATION_SUCCESS:
+							c.successfulRegistration();
+							break;
+						default:
+							break;
 						}
 
-						/*if (inputLine.startsWith("LOGINSUCCESSFUL")) {
-							System.out.println("Login success!");
-						} else if (inputLine.startsWith("LOGINFAILURE")) {
-
-						} else if (inputLine.startsWith("LOGOUTSUCCESSFUL")) {
-
-						} else if (inputLine.startsWith("ORDERSUCCESSFUL")) {
-
-						}*/
 					}
 
 				}

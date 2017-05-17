@@ -18,6 +18,11 @@ public class IngredientTableModel extends AbstractTableModel implements Ingredie
 	public void setUpdated() {
 		update = false;
 	}
+	
+	@Override
+	public String getColumnName(int index) {
+	    return columnNames[index];
+	}
 
 	public void addIngredient(StockedIngredient i) {
 		stockedIngredients.add(i);

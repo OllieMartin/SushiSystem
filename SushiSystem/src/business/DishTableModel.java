@@ -24,6 +24,11 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 		stockedDishes.add(d);
 	}
 	
+	@Override
+	public String getColumnName(int index) {
+	    return columnNames[index];
+	}
+	
 	public void removeDish(StockedDish d) {
 		stockedDishes.remove(d);
 	}

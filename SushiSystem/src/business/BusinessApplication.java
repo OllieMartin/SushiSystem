@@ -16,19 +16,6 @@ public class BusinessApplication extends JFrame {
 				new BusinessApplication();
 			}
 		});
-		
-		/*Dish d = new Dish("Food", "Some food", 10);
-		Ingredient i = new Ingredient("FoodPart", "Parts", new Supplier("Supplier1", 100));
-		d.addRecipeIngredient(i, 5);
-		StockedDish sd = new StockedDish(d,10);
-		StockedIngredient si = new StockedIngredient(i,30);
-		si.add(60);*/
-
-		//Thread t = new Thread(new KitchenStaff());
-		//Thread t2 = new Thread(new KitchenStaff());
-		//t.start();
-		//t2.start();
-		
 	}
 	
 	private static final int DEFAULT_WIDTH = 1000; // Default width for the main window pixels
@@ -39,9 +26,14 @@ public class BusinessApplication extends JFrame {
 	private BusinessApplicationPane mainPane;
 	private AccountManager am;
 	private ServerComms sc;
+	private OrderManager om;
 	
 	public AccountManager getAccountManager() {
 		return this.am;
+	}
+	
+	public OrderManager getOrderManager() {
+		return this.om;
 	}
 	
 	public BusinessApplication() {
@@ -51,6 +43,7 @@ public class BusinessApplication extends JFrame {
 		sc = new ServerComms(this);
 		new Thread(sc).start();
 		am = new AccountManager();
+		om = new OrderManager();
 		
 		mainPane = new BusinessApplicationPane();
 		this.add(mainPane);

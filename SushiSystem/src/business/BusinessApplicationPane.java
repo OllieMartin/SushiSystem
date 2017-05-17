@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
@@ -45,16 +46,16 @@ public class BusinessApplicationPane extends JPanel {
 		dishTableModel = new DishTableModel();
 		dishTable = new JTable();
 		dishTable.setModel(dishTableModel);
-		tabs.addTab("Dishes" ,dishTable);
+		tabs.addTab("Dishes" ,new JScrollPane(dishTable));
 		ingredientTableModel = new IngredientTableModel();
 		ingredientTable = new JTable();
 		ingredientTable.setModel(ingredientTableModel);
-		tabs.addTab("Ingredients",ingredientTable);
+		tabs.addTab("Ingredients",new JScrollPane(ingredientTable));
 
 		kitchenTableModel = new KitchenTableModel();
 		kitchenTable = new JTable();
 		kitchenTable.setModel(kitchenTableModel);
-		tabs.addTab("Kitchen Staff",kitchenTable);
+		tabs.addTab("Kitchen Staff",new JScrollPane(kitchenTable));
 
 		addSupplier = new JButton("Add New Supplier");
 		addSupplier.addActionListener(new ActionListener() {

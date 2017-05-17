@@ -1,4 +1,5 @@
 package business;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -9,13 +10,14 @@ import java.util.Set;
  * @author Oliver Martin (ojm1g16)
  *
  */
-public class Dish {
+public class Dish implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String name; // The name of the dish
 	private String description; // A brief description of the dish
 	private float price; // The price of the dish
 	private Set<RecipeIngredient> recipe; // The recipe of the dish, made up of recipe ingredients
-	
+
 	/**
 	 * Creates a new dish with the specified parameters and an initially empty recipe
 	 * 
@@ -53,7 +55,7 @@ public class Dish {
 	public float getPrice() {
 		return price;
 	}
-	
+
 	/**
 	 * Adds an ingredient to the recipe of this dish
 	 * 
@@ -63,7 +65,7 @@ public class Dish {
 	public void addRecipeIngredient(Ingredient ingredient, int quantity) {
 		this.recipe.add(new RecipeIngredient(ingredient,quantity));
 	}
-	
+
 	/**
 	 * Gets the recipe of the dish as a set of RecipeIngredients.
 	 * 
@@ -72,7 +74,7 @@ public class Dish {
 	public Set<RecipeIngredient> getRecipe() {
 		return this.recipe;
 	}
-	
+
 	/**
 	 * Returns true if this dish uses the specified ingredient in its recipe
 	 * 
@@ -80,17 +82,17 @@ public class Dish {
 	 * @return True if the ingredient is used in the recipe, false otherwise
 	 */
 	public boolean usesIngredient(Ingredient ingredient) {
-		
+
 		for (RecipeIngredient rIngredient : recipe) {
 			if (rIngredient.getIngredient() == ingredient) {
 				return true;
 			}
 		}
-		
+
 		return false;
-		
+
 	}
-	
+
 	/**
 	 * Returns the quantity of the ingredient used in the recipe
 	 * 
@@ -99,20 +101,20 @@ public class Dish {
 	 * @throws NoSuchElementException If the ingredient is not in the recipe
 	 */
 	public int getQuantity(Ingredient ingredient) {
-		
+
 		for (RecipeIngredient rIngredient : recipe) {
 			if (rIngredient.getIngredient() == ingredient) {
 				return rIngredient.getQuantity();
 			}
 		}
-		
+
 		throw new NoSuchElementException();
-		
+
 	}
-	
+
 	@Override
 	public String toString() {
 		return getName();
 	}
-	
+
 }

@@ -17,6 +17,11 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	public KitchenTableModel() {
 		super();
 	}
+	
+	@Override
+	public String getColumnName(int index) {
+	    return columnNames[index];
+	}
 
 	public boolean hasUpdate() {
 		return update;

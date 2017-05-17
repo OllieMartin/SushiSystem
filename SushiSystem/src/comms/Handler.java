@@ -5,8 +5,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 import business.AccountManager;
+import business.MenuDish;
+import business.OrderDish;
+import business.OrderManager;
+import business.StockedDish;
 
 /**
  * A handler class which will create threads for each client connection
@@ -21,12 +27,16 @@ public class Handler extends Thread {
 	protected ObjectOutputStream out;
 	protected ServerComms server;
 	private AccountManager am;
+	private OrderManager om;
+	private boolean connected;
 	Message m;
+	boolean login = false;
 
-	public Handler(Socket socket, ServerComms server, AccountManager am) {
+	public Handler(Socket socket, ServerComms server, AccountManager am, OrderManager om) {
 		this.socket = socket;
 		this.server = server;
 		this.am = am;
+		this.om = om;
 	}
 	//Set the socket, and the connected server class
 
@@ -44,7 +54,7 @@ public class Handler extends Thread {
 			// Keep requesting the connection to enter a name
 			// NB: We must lock the set of names while doing this!
 
-			boolean login = false;
+
 			while (!login) {
 				out.writeObject(new LoginRequestMessage());
 
@@ -84,8 +94,46 @@ public class Handler extends Thread {
 					}
 				}
 			}
-			
+
 			System.out.println("LOGGED IN MODE");
+			connected = true;
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+
+					while (connected) {
+						try {
+							System.out.println("SENDING DISH STOCK MESSAGE");
+							List<MenuDish> dishes = new ArrayList<MenuDish>();
+							for (StockedDish dish : StockedDish.getStockedDishes()) {
+								dishes.add(new MenuDish(dish));
+							}
+							out.writeObject(new DishStockMessage(dishes));
+							Thread.sleep(5000);
+						} catch (IOException e) {
+							connected = false;
+						} catch (InterruptedException e) { /*EMPTY*/}
+					}
+
+				}
+
+			}).start();
+
+			while (login) {
+				m = (Message)in.readObject(); //Set name to the next line of the input stream
+				if (m == null) {
+					return; //If the connected is terminated and the input stream no longer gets a result then terminate this runnable
+				}
+				if (m.getType() == MessageType.ORDER) {
+					System.out.println("Order detected");
+					OrderMessage o = (OrderMessage)m;
+					om.createOrder(name, o.getDishes());
+					for (OrderDish d : o.getDishes()) {
+						System.out.println(d.getDish().getName());
+					}
+				}
+			}
 
 			// The user is now accepted by our system
 			// Add a new printWriter for this client to the hashset so we can send messages
@@ -98,6 +146,8 @@ public class Handler extends Thread {
 			e.printStackTrace();
 		} finally {
 			am.logoutUser(name);
+			connected = false;
+			login = false;
 			// This client is going down!  Remove its name and its print
 			// writer from the sets, and close its socket.
 			if (name != null) {

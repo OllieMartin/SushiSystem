@@ -16,6 +16,7 @@ public class OrderManager {
 	}
 	
 	public void createOrder(String user, List<OrderDish> dishes) {
+		System.out.println("Creating new order!");
 		Order order = new Order(user, dishes);
 		orders.add(order);
 		if (userOrders.containsKey(user)) {
@@ -24,6 +25,14 @@ public class OrderManager {
 			List<Order> newEntry = new ArrayList<Order>();
 			newEntry.add(order);
 			userOrders.put(user, newEntry);
+		}
+		for (OrderDish dish : dishes) {
+			
+			if (StockedDish.isStocked(dish.getDish().getName())) {
+				System.out.println("!");
+				StockedDish.getStockedDish(dish.getDish().getName()).increaseDemand(dish.getQuantity());
+			}
+			
 		}
 	}
 	

@@ -33,7 +33,7 @@ public class ServerComms extends Comms implements Runnable {
 
 			try {
 				while (true) {
-					new Handler(listener.accept(),this,ba.getAccountManager()).start();
+					new Handler(listener.accept(),this,ba.getAccountManager(),ba.getOrderManager()).start();
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

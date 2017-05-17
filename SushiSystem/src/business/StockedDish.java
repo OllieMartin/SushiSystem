@@ -1,4 +1,5 @@
 package business;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -9,8 +10,10 @@ import java.util.NoSuchElementException;
  * @author Oliver Martin (ojm1g16)
  *
  */
-public class StockedDish extends StockedProduct {
+public class StockedDish extends StockedProduct implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private static List<StockedDish> stockedDishes = new ArrayList<StockedDish>();
 	
 	public static List<StockedDish> getStockedDishes() {
@@ -26,9 +29,18 @@ public class StockedDish extends StockedProduct {
 	 * @return The Stocked Dish
 	 * @throws NoSuchElementException if the dish is not stocked
 	 */
-	public static StockedDish getStockedDish(Dish dish) {
+	/*public static StockedDish getStockedDish(Dish dish) {
 		for (StockedDish sDish : stockedDishes) {
 			if (sDish.getDish() == dish) {
+				return sDish;
+			}
+		}
+		throw new NoSuchElementException();
+	}*/
+	
+	public static StockedDish getStockedDish(String dish) {
+		for (StockedDish sDish : stockedDishes) {
+			if (sDish.getDish().getName().equals(dish)) {
 				return sDish;
 			}
 		}
@@ -41,9 +53,18 @@ public class StockedDish extends StockedProduct {
 	 * @param dish The dish to check
 	 * @return True if it is being stocked, false otherwise
 	 */
-	public static boolean isStocked(Dish dish) {
+	/*public static boolean isStocked(Dish dish) {
 		for (StockedDish sDish : stockedDishes) {
 			if (sDish.getDish() == dish) {
+				return true;
+			}
+		}
+		return false;
+	}*/
+	
+	public static boolean isStocked(String dish) {
+		for (StockedDish sDish : stockedDishes) {
+			if (sDish.getDish().getName().equals(dish)) {
 				return true;
 			}
 		}
@@ -51,6 +72,7 @@ public class StockedDish extends StockedProduct {
 	}
 	
 	private Dish dish; // The ingredient being stocked
+	private int demand; // Current demand from customers;
 	
 	/**
 	 * Create a new StockedDish with the specified pre-made dish and restocking level
@@ -93,10 +115,19 @@ public class StockedDish extends StockedProduct {
 	@Override
 	public synchronized void use(int numberToUse) {
 		super.use(numberToUse);
+		demand = demand - numberToUse;
 		stockDecreased();
 		if (getNumberInStock() == 0) {
 			stockOut();
 		}
+	}
+	
+	public synchronized void increaseDemand(int quantity) {
+		demand = demand + quantity;
+	}
+	
+	public synchronized int getDemand() {
+		return demand;
 	}
 	
 	@Override

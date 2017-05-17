@@ -1,12 +1,15 @@
 package business;
 
-public class OrderDish {
+import java.io.Serializable;
 
+public class OrderDish implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private Dish dish;
 	private int quantity;
 	
 	public OrderDish(Dish dish, int quantity) {
-		this.dish = dish;
+		this.dish = new Dish(dish.getName(),dish.getDescription(),dish.getPrice());
 		this.quantity = quantity;
 	}
 	

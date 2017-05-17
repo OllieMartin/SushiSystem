@@ -2,27 +2,30 @@
 package client;
 
 import java.awt.Dimension;
+import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.text.StyledDocument;
+import javax.swing.SwingUtilities;
 
+import business.MenuDish;
+import business.OrderDish;
 import comms.ClientComms;
 import comms.LoginMessage;
+import comms.OrderMessage;
 import comms.RegistrationMessage;
 
 public class Client extends JFrame{
 
 	private static final long serialVersionUID = 1L;
-	
-	ClientComms comms;
-	public JTextField textField = new JTextField(40);
-	protected JTextPane messageArea = new JTextPane();
-	public StyledDocument doc = messageArea.getStyledDocument();
+
+	private ClientComms comms;
+	private ClientPanel panel;
+	private DishClientTableModel tableModel; //TODO maybe pass ref to this instead of whole client?
+	public DishClientTableModel getTableModel() {
+		return this.tableModel;
+	}
+	private List<MenuDish> dishes;
 	boolean connected;
 	
 	public void setConnected(boolean status) {
@@ -35,9 +38,9 @@ public class Client extends JFrame{
 	public Client() {
 
 		super("Sushi System Client");
-		
+
 		new LoginFrame(this);
-		
+
 		comms = new ClientComms(this);
 
 		if (!comms.establishConnection()) {
@@ -46,30 +49,37 @@ public class Client extends JFrame{
 		} else {
 			connected = true;
 		}
-		//comms.sendMessage(new LoginMessage("Oliver","Revilo"));
-		// Layout GUI
-		textField.setEditable(false);
-		textField.setMaximumSize(
-				new Dimension(Integer.MAX_VALUE,
-						textField.getPreferredSize().height));
-		//textField.setMaximumSize( textField.getPreferredSize() );
-		Box box = Box.createVerticalBox();
-		box.add(Box.createVerticalGlue());
-		box.add(textField);
-		box.add(Box.createVerticalGlue());
-		messageArea.setEditable(false);
-		this.getContentPane().add(box, "Center");
-		//messageArea.setBounds(0,0,400,400);
-		JScrollPane p = new JScrollPane(messageArea);
-		p.setPreferredSize(new Dimension(200,200));
-		this.getContentPane().add(p, "South");
-		this.pack();
-		// Add Listeners
+
+		tableModel = new DishClientTableModel();
+		new Thread(new Runnable() {
+			//TODO v ugly
+			@Override
+			public void run() {
+
+				while (connected) {
+					if (tableModel.hasUpdate()) {
+						tableModel.fireTableDataChanged();
+						tableModel.setUpdated();
+					}
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+
+			}
+		}).start();
+		panel = new ClientPanel(this);
+		this.setContentPane(panel);
+		this.setMinimumSize(new Dimension(600,400));
+		this.setPreferredSize(new Dimension(600,400));
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 	}
-	
+
 	public void attemptLogin(String user, char[] password) {
-		
+
 		if (connected) {
 			comms.sendMessage(new LoginMessage(user,new String(password)));
 		} else {
@@ -78,14 +88,33 @@ public class Client extends JFrame{
 				JOptionPane.showMessageDialog(null, "Could not connected to server", "Information", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				connected = true;
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+
+						while (connected) {
+							if (tableModel.hasUpdate()) {
+								tableModel.fireTableDataChanged();
+								tableModel.setUpdated();
+							}
+							try {
+								Thread.sleep(200);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+
+					}
+				}).start();
 				comms.sendMessage(new LoginMessage(user,new String(password)));
 			}
 		}
-		
+
 	}
-	
+
 	public void attemptRegister(String user, char[] password, String address, String postcode) {
-		
+
 		if (connected) {
 			comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
 		} else {
@@ -94,37 +123,81 @@ public class Client extends JFrame{
 				JOptionPane.showMessageDialog(null, "Could not connected to server", "Information", JOptionPane.INFORMATION_MESSAGE);
 			} else {
 				connected = true;
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+
+						while (connected) {
+							if (tableModel.hasUpdate()) {
+								tableModel.fireTableDataChanged();
+								tableModel.setUpdated();
+							}
+							try {
+								Thread.sleep(200);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+
+					}
+				}).start();
 				comms.sendMessage(new RegistrationMessage(user,new String(password),address,postcode));
 			}
-			
+
 		}
 	}
-	
+
 	public void requestRegister() {
-		
+
 		new RegistrationFrame(this);
-		
+
 	}
-	
+
 	public void successfulLogin() {
 		this.setVisible(true);
 	}
-	
+
 	public void successfulRegistration() {
 		new LoginFrame(this);
 	}
-	
+
 	public void failedLogin() {
 		new InvalidLoginFrame(this);
 	}
-	
+
 	public void invalidRegistration() {
 		new InvalidRegistrationFrame(this);
 	}
 
+	public void updateDishStock(List<MenuDish> dishes) {
+
+		System.out.println("UPDATING DISH STOCKS!");
+		tableModel.clear();
+		this.dishes = dishes;
+		for (MenuDish dish : dishes) {
+			tableModel.dishAdded(dish);
+		}
+
+	}
+	
+	public void placeOrder(List<OrderDish> order) {
+		for (OrderDish d : order) {
+			System.out.println(d.getDish().getName());
+		}
+		comms.sendMessage(new OrderMessage(order));
+	}
+	
+	public List<MenuDish> getDishes() {
+		return this.dishes;
+	}
+
 	public static void main(String[] args) throws Exception {
-		Client client = new Client(); //Create a new chat client
-		client.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //When JFrame closed, close application
+		SwingUtilities.invokeLater( new Runnable() { 
+			public void run() {  
+				new Client();
+			}
+		});
 	}
 
 }
