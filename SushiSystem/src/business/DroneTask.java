@@ -1,6 +1,8 @@
 package business;
 
-public abstract class DroneTask {
+import java.io.Serializable;
+
+public abstract class DroneTask implements Serializable {
 	
 	private DroneTaskType type;
 	private float distance;

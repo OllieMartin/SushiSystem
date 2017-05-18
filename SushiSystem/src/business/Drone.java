@@ -1,27 +1,35 @@
 package business;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Drone implements Runnable {
+public class Drone implements Runnable, Serializable {
 
 	private int flyingSpeed;
 	private DroneStatus status;
 	private DroneTask task;
 	private float distanceToDestination;
 	private float distanceFromBusiness;
-	private DroneManager dm;
 	private int id;
 	private static Integer nextId;
 	
+	public static Integer getNextId() {
+		return nextId;
+	}
+	
+	public static void setNextId(Integer id) {
+		nextId = id;
+	}
+
 	private List<DroneListener> droneListeners = new ArrayList<DroneListener>();
 
-	public Drone(DroneManager dm, int flyingSpeed) {
+	public Drone(int flyingSpeed) {
 		this.flyingSpeed = flyingSpeed;
 		this.status = DroneStatus.IDLE;
 		this.distanceToDestination = -1;
 		this.distanceFromBusiness = -1;
-		this.dm = dm;
+
 		if (nextId == null) {
 			nextId = 0;
 		}
@@ -38,7 +46,22 @@ public class Drone implements Runnable {
 	public int getId() {
 		return this.id;
 	}
-	
+
+	public void reset() {
+		this.status = DroneStatus.IDLE;
+		if (this.task.getType() == DroneTaskType.DELIVER_ORDER) {
+			DroneOrderTask orderTask = (DroneOrderTask) task;
+			orderTask.getOrder().setStatus(OrderStatus.PLACED);
+		}
+		if (this.task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
+			DroneIngredientTask ingredientTask = (DroneIngredientTask) this.task;
+			ingredientTask.getIngredient().decrementNumberBeingRestocked(20);
+		}
+		this.setTask(null);
+		this.distanceToDestination = -1;
+		this.distanceFromBusiness = -1;
+	}
+
 	public int getFlyingSpeed() {
 		return this.flyingSpeed;
 	}
@@ -57,19 +80,21 @@ public class Drone implements Runnable {
 
 	public void setTask(DroneTask task) {
 		this.task = task;
-		if (task.getType() == DroneTaskType.DELIVER_ORDER) {
-			DroneOrderTask orderTask = (DroneOrderTask) task;
-			this.distanceToDestination = task.getDistance();
-			this.distanceFromBusiness = 0;
-			status = DroneStatus.DELIVERING_ORDER;
-			statusChanged();
-			orderTask.getOrder().setStatus(OrderStatus.TRANSIT);
+		if (task != null) {
+			if (task.getType() == DroneTaskType.DELIVER_ORDER) {
+				DroneOrderTask orderTask = (DroneOrderTask) task;
+				this.distanceToDestination = task.getDistance();
+				this.distanceFromBusiness = 0;
+				status = DroneStatus.DELIVERING_ORDER;
+				statusChanged();
+				orderTask.getOrder().setStatus(OrderStatus.TRANSIT);
 
-		} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
-			this.distanceToDestination = task.getDistance();
-			this.distanceFromBusiness = 0;
-			status = DroneStatus.COLLECTING_INGREDIENT;
-			statusChanged();
+			} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
+				this.distanceToDestination = task.getDistance();
+				this.distanceFromBusiness = 0;
+				status = DroneStatus.COLLECTING_INGREDIENT;
+				statusChanged();
+			}
 		}
 	}
 
@@ -79,7 +104,7 @@ public class Drone implements Runnable {
 		while (true) {
 
 			if (status == DroneStatus.IDLE) {
-				task = dm.getTask();
+				task = DroneManager.getInstance().getTask();
 				if (task != null) {
 					setTask(task);
 				}
@@ -174,7 +199,7 @@ public class Drone implements Runnable {
 		}
 
 	}
-	
+
 	public void addListener(DroneListener toAdd) {
 		droneListeners.add(toAdd);
 	}

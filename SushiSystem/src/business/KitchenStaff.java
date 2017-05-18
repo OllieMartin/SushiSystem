@@ -1,4 +1,5 @@
 package business;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -7,12 +8,24 @@ import java.util.Random;
 import java.util.Set;
 //TODO More than one make a dish at a time
 //TODO Need to be able to remove kitchen staff from system (& update in model ofc)
-public class KitchenStaff implements Runnable {
+public class KitchenStaff implements Runnable, Serializable {
 
 	private static List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 
 	public static List<KitchenStaff> getKitchenStaff() {
 		return kitchenStaff;
+	}
+	
+	public static void loadKitchenStaff(List<KitchenStaff> staff) {
+		kitchenStaff = staff;
+		for (KitchenStaff k : kitchenStaff) {
+			k.setFree();
+			if (BusinessApplicationPane.getKitchenTableModel() != null) {
+				k.addListener(BusinessApplicationPane.getKitchenTableModel() );//TODO Move static reference location
+			}
+			k.newAdded();
+			new Thread(k).start();
+		}
 	}
 
 	private List<KitchenStaffListener> kitchenListeners = new ArrayList<KitchenStaffListener>();
@@ -220,5 +233,6 @@ public class KitchenStaff implements Runnable {
 		for (KitchenStaffListener l : kitchenListeners)
 			l.kitchenStaffAdded(this);
 	}
+
 
 }

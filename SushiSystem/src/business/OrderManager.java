@@ -7,14 +7,22 @@ import java.util.Map;
 
 public class OrderManager {
 
-	private DroneManager dm;
 	private List<Order> orders;
 	private Map<String,List<Order>> userOrders;
 	
-	public OrderManager(DroneManager dm) {
+	private static OrderManager instance;
+	
+	public static OrderManager getInstance() {
+		return instance;
+	}
+	
+	static {
+		instance = new OrderManager();
+	}
+	
+	private OrderManager() {
 		orders = new ArrayList<Order>();
 		userOrders = new HashMap<String,List<Order>>();
-		this.dm = dm;
 	}
 	
 	public void createOrder(String user, List<OrderDish> dishes) {
@@ -36,7 +44,7 @@ public class OrderManager {
 			}
 			
 		}
-		dm.addTask(order);
+		DroneManager.getInstance().addTask(order);
 	}
 	
 	public List<Order> getWaitingOrders() {
@@ -51,6 +59,27 @@ public class OrderManager {
 	
 	public List<Order> getOrders() {
 		return this.orders;
+	}
+	
+	public void loadOrders(List<Order> orders) {
+		this.orders = orders;
+		for (Order o : this.orders) {
+			if (o.getStatus() == OrderStatus.TRANSIT) {
+				o.setStatus(OrderStatus.PLACED);
+			}
+			if (BusinessApplicationPane.getOrderTableModel() != null) {
+				o.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
+			}
+			o.newAdded();
+			if (userOrders.containsKey(o.getUser())) {
+				getUserOrders(o.getUser()).add(o);
+			} else {
+				List<Order> newEntry = new ArrayList<Order>();
+				newEntry.add(o);
+				userOrders.put(o.getUser(), newEntry);
+			}
+			DroneManager.getInstance().addTask(o);
+		}
 	}
 	
 	/**

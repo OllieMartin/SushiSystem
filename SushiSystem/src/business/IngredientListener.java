@@ -1,5 +1,8 @@
 package business;
-public interface IngredientListener {
+
+import java.io.Serializable;
+
+public interface IngredientListener extends Serializable {
 
 	void stockIncreased(StockedIngredient i);
 	

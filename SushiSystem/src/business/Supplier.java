@@ -17,6 +17,10 @@ public class Supplier implements Serializable {
 	public static List<Supplier> getSuppliers() {
 		return suppliers;
 	}
+	
+	public static void loadSuppliers(List<Supplier> suppliers) {
+		Supplier.suppliers = suppliers;
+	}
 
 
 	private String name; // The name of the supplier

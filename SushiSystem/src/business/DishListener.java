@@ -1,5 +1,8 @@
 package business;
-public interface DishListener {
+
+import java.io.Serializable;
+
+public interface DishListener extends Serializable {
 
 	void stockIncreased(StockedDish d);
 	

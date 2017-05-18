@@ -8,8 +8,25 @@ public class AccountManager {
 
 	private Map<String,UserAccount> registeredUsers;
 	private Set<UserAccount> online;
+	private static AccountManager instance;
+	
+	public Map<String,UserAccount> getRegisteredUsers() {
+		return this.registeredUsers;
+	}
+	
+	public void loadRegisteredUsers(Map<String,UserAccount> registeredUsers) {
+		this.registeredUsers = registeredUsers;
+	}
+	
+	public static AccountManager getInstance() {
+		return instance;
+	}
+	
+	static {
+		instance = new AccountManager();
+	}
 
-	public AccountManager() {
+	private AccountManager() {
 
 		this.registeredUsers = new HashMap<String, UserAccount>();
 		this.online = new HashSet<UserAccount>();

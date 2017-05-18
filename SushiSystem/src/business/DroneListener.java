@@ -1,6 +1,8 @@
 package business;
 
-public interface DroneListener {
+import java.io.Serializable;
+
+public interface DroneListener extends Serializable {
 
 	void droneStatusChanged(Drone d);
 	

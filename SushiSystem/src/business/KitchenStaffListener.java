@@ -1,5 +1,8 @@
 package business;
-public interface KitchenStaffListener {
+
+import java.io.Serializable;
+
+public interface KitchenStaffListener extends Serializable {
 
 	void kitchenStaffBusy(KitchenStaff k, Dish d);
 	

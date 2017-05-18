@@ -16,6 +16,14 @@ public class Order implements Serializable{
 	private static Integer nextId;
 	private float price;
 	
+	public static void setNextId(Integer id) {
+		nextId = id;
+	}
+	
+	public static Integer getNextId() {
+		return nextId;
+	}
+	
 	public Order(String user, List<OrderDish> dishes) {
 		this.dishes = dishes;
 		this.user = user;

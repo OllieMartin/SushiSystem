@@ -1,11 +1,14 @@
 package business;
+
+import java.io.Serializable;
+
 /**
  * Represents a product held in stock by the company
  * 
  * @author Oliver Martin (ojm1g16)
  *
  */
-public abstract class StockedProduct {
+public abstract class StockedProduct implements Serializable {
 
 	protected ProductType type; // The type of product being stocked, ingredient or dish
 	protected int restockingLevel; // The re-stocking level of the product

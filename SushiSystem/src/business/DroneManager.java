@@ -11,13 +11,20 @@ public class DroneManager implements IngredientListener {
 	private static final float[] DISTANCES = {500,450,360,700,900,400};
 	private List<Drone> drones;
 	private Queue<DroneTask> tasks;
-	private AccountManager am;
+	private static DroneManager instance;
+	
+	public static DroneManager getInstance() {
+		return instance;
+	}
 
-	public DroneManager(AccountManager am) {
+	static {
+		instance = new DroneManager();
+	}
+	
+	private DroneManager() {
 
 		drones = new ArrayList<Drone>();
 		tasks = new ConcurrentLinkedQueue<DroneTask>();
-		this.am = am;
 		new Thread(new Runnable() {
 
 			@Override
@@ -30,6 +37,7 @@ public class DroneManager implements IngredientListener {
 					
 					for (StockedIngredient i : stockedIngredients) {
 						checkStock(i);
+						System.out.println("!!!!!!!!!!!!!!!!!!!!! CHECKING STOCK : : : : : : ");
 					}
 					
 					try {
@@ -48,6 +56,22 @@ public class DroneManager implements IngredientListener {
 
 	}
 	
+	public List<Drone> getDrones() {
+		return this.drones;
+	}
+	
+	public void loadDrones(List<Drone> drones) {
+		this.drones = drones;
+		for (Drone d : this.drones) {
+			d.reset();
+			if (BusinessApplicationPane.getDroneTableModel() != null) {
+				d.addListener(BusinessApplicationPane.getDroneTableModel() );//TODO Move static reference location
+			}
+			d.newAdded();
+			new Thread(d).start();
+		}
+	}
+	
 	public void addTask(StockedIngredient ingredient) {
 		tasks.add(new DroneIngredientTask(ingredient,ingredient.getIngredient().getSupplier().getDistance()));
 	}
@@ -58,15 +82,15 @@ public class DroneManager implements IngredientListener {
 
 	public float getDistanceToUser(String user) {
 
-		if (am.existsUser(user)) {
-			return getDistanceTo(am.getUser(user).getPostcode());
+		if (AccountManager.getInstance().existsUser(user)) {
+			return getDistanceTo(AccountManager.getInstance().getUser(user).getPostcode());
 		}
 		return 0;
 
 	}
 
 	public void addDrone() {
-		Drone drone = new Drone(this,5);
+		Drone drone = new Drone(5);
 		drones.add(drone);
 		new Thread(drone).start();
 	}
@@ -109,6 +133,7 @@ public class DroneManager implements IngredientListener {
 				} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS){
 					DroneIngredientTask dit = (DroneIngredientTask)task;
 					if (dit.getIngredient().getNumberInStock() >= dit.getIngredient().getRestockingLevel()) {
+						dit.getIngredient().decrementNumberBeingRestocked(20);
 						tasks.poll();
 						return null;
 					}

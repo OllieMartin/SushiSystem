@@ -26,6 +26,7 @@ public class BusinessApplicationPane extends JPanel {
 	private JTabbedPane tabs;
 	private JTable orderTable;
 	private JTable droneTable;
+	private JButton saveButton;
 	
 	private JPanel addButtons;
 	private JPanel others;
@@ -66,7 +67,7 @@ public class BusinessApplicationPane extends JPanel {
 		addButtons = new JPanel();
 		addButtons.setLayout(new GridLayout(1,5));
 		others = new JPanel();
-		others.setLayout(new GridLayout(1,1));
+		others.setLayout(new GridLayout(1,2));
 		
 		dishTableModel = new DishTableModel();
 		dishTable = new JTable();
@@ -174,6 +175,20 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		t.start();
+		
+		saveButton = new JButton("Save data to file");
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				DataPersistence.getInstance().saveAll("save.dat");
+				
+			}
+	
+		});
+		
+		others.add(saveButton);
 		
 		this.add(addButtons,BorderLayout.NORTH);
 		this.add(others,BorderLayout.SOUTH);

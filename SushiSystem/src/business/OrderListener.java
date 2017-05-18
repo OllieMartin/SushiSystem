@@ -1,6 +1,8 @@
 package business;
 
-public interface OrderListener {
+import java.io.Serializable;
+
+public interface OrderListener extends Serializable {
 	
 	void orderStatusChanged(Order o);
 	

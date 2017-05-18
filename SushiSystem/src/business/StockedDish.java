@@ -20,6 +20,17 @@ public class StockedDish extends StockedProduct implements Serializable {
 		return stockedDishes;
 	}
 	
+	public static void loadStockedDishes(List<StockedDish> dishes) {
+		stockedDishes = dishes;
+		for (StockedDish d : stockedDishes) {
+			d.decrementNumberBeingRestocked(d.getNumberBeingRestocked());
+			if (BusinessApplicationPane.getDishTableModel() != null) {
+				d.addListener(BusinessApplicationPane.getDishTableModel() );//TODO Move static reference location
+			}
+			d.newAdded();
+		}
+	}
+	
 	private List<DishListener> dishListeners = new ArrayList<DishListener>();
 	
 	/**

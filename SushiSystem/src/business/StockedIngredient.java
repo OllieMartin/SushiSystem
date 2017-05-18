@@ -17,6 +17,17 @@ public class StockedIngredient extends StockedProduct {
 		return stockedIngredients;
 	}
 	
+	public static void loadStockedIngredients(List<StockedIngredient> ingredients) {
+		stockedIngredients = ingredients;
+		for (StockedIngredient i : stockedIngredients) {
+			i.decrementNumberBeingRestocked(i.getNumberBeingRestocked());
+			if (BusinessApplicationPane.getIngredientTableModel() != null) {
+				i.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
+			}
+			i.newAdded();
+		}
+	}
+	
 	private List<IngredientListener> ingredientListeners = new ArrayList<IngredientListener>();
 	
 	/**

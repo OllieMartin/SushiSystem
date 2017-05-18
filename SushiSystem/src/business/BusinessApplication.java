@@ -54,13 +54,17 @@ public class BusinessApplication extends JFrame {
 		
 		sc = new ServerComms(this);
 		new Thread(sc).start();
-		am = new AccountManager();
-		dm = new DroneManager(am);
-		om = new OrderManager(dm);
+		am = AccountManager.getInstance();
+		dm = DroneManager.getInstance();
+		om = OrderManager.getInstance();
 
 		
 		mainPane = new BusinessApplicationPane(this);
 		this.add(mainPane);
+		
+		if (DataPersistence.getInstance().fileExists("save.dat")) {
+			DataPersistence.getInstance().loadAll("save.dat");
+		}
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

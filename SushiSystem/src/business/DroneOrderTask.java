@@ -1,6 +1,8 @@
 package business;
 
-public class DroneOrderTask extends DroneTask {
+import java.io.Serializable;
+
+public class DroneOrderTask extends DroneTask implements Serializable {
 	
 	private Order order;
 
