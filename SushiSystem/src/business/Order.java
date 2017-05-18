@@ -1,10 +1,13 @@
 package business;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order implements Serializable{
 
+	private List<OrderListener> orderListeners = new ArrayList<OrderListener>();
+	
 	private static final long serialVersionUID = 1L;
 	private List<OrderDish> dishes;
 	private String user;
@@ -28,6 +31,10 @@ public class Order implements Serializable{
 		for (OrderDish dish : dishes) {
 			price = price + dish.getDish().getPrice() * dish.getQuantity();
 		}
+		if (BusinessApplicationPane.getOrderTableModel() != null) {
+			this.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
+		}
+		newAdded();
 	}
 	
 	public int getId() {
@@ -53,6 +60,21 @@ public class Order implements Serializable{
 	
 	public void setStatus(OrderStatus status) {
 		this.status = status;
+		orderStatusChanged();
+	}
+	
+	public void addListener(OrderListener toAdd) {
+		orderListeners.add(toAdd);
+	}
+
+	public void newAdded() {
+		for (OrderListener l : orderListeners)
+			l.orderPlaced(this);
+	}
+	
+	public void orderStatusChanged() {
+		for (OrderListener l : orderListeners)
+			l.orderStatusChanged(this);
 	}
 	
 }

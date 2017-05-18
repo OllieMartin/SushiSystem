@@ -7,12 +7,14 @@ import java.util.Map;
 
 public class OrderManager {
 
+	private DroneManager dm;
 	private List<Order> orders;
 	private Map<String,List<Order>> userOrders;
 	
-	public OrderManager() {
+	public OrderManager(DroneManager dm) {
 		orders = new ArrayList<Order>();
 		userOrders = new HashMap<String,List<Order>>();
+		this.dm = dm;
 	}
 	
 	public void createOrder(String user, List<OrderDish> dishes) {
@@ -34,6 +36,7 @@ public class OrderManager {
 			}
 			
 		}
+		dm.addTask(order);
 	}
 	
 	public List<Order> getWaitingOrders() {
@@ -65,5 +68,7 @@ public class OrderManager {
 			return null;
 		}
 	}
+	
+	
 	
 }

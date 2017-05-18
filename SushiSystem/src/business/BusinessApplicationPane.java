@@ -17,11 +17,14 @@ public class BusinessApplicationPane extends JPanel {
 	private JTable ingredientTable;
 	private JTable kitchenTable;
 	private JButton addKitchenStaff = new JButton("Add Kitchen Staff");
+	private JButton addDrone = new JButton("Add Drone");
 	private JButton addSupplier;
 	private JButton addIngredient;
 	private JButton addDish;
 	private JButton changeRestockingLevel;
 	private JTabbedPane tabs;
+	private JTable orderTable;
+	private JTable droneTable;
 
 	private static KitchenTableModel kitchenTableModel; //TODO
 	public static KitchenTableModel getKitchenTableModel() {
@@ -37,9 +40,19 @@ public class BusinessApplicationPane extends JPanel {
 	public static IngredientTableModel getIngredientTableModel() {
 		return ingredientTableModel;
 	}
+	
+	private static OrderTableModel orderTableModel; //TODO
+	public static OrderTableModel getOrderTableModel() {
+		return orderTableModel;
+	}
+	
+	private static DroneTableModel droneTableModel; //TODO
+	public static DroneTableModel getDroneTableModel() {
+		return droneTableModel;
+	}
 
 
-	public BusinessApplicationPane() {
+	public BusinessApplicationPane(BusinessApplication ba) {
 		tabs = new JTabbedPane();
 		this.add(tabs);
 		this.setLayout(new GridLayout(3,3));
@@ -56,6 +69,16 @@ public class BusinessApplicationPane extends JPanel {
 		kitchenTable = new JTable();
 		kitchenTable.setModel(kitchenTableModel);
 		tabs.addTab("Kitchen Staff",new JScrollPane(kitchenTable));
+		
+		orderTableModel = new OrderTableModel();
+		orderTable = new JTable();
+		orderTable.setModel(orderTableModel);
+		tabs.addTab("Orders",new JScrollPane(orderTable));
+		
+		droneTableModel = new DroneTableModel();
+		droneTable = new JTable();
+		droneTable.setModel(droneTableModel);
+		tabs.addTab("Drones",new JScrollPane(droneTable));
 
 		addSupplier = new JButton("Add New Supplier");
 		addSupplier.addActionListener(new ActionListener() {
@@ -110,6 +133,16 @@ public class BusinessApplicationPane extends JPanel {
 			}
 
 		});
+		
+		this.add(addDrone);
+		addDrone.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ba.getDroneManager().addDrone();
+			}
+
+		});
 		updateTables();
 
 		Thread t = new Thread(new Runnable() {
@@ -144,6 +177,14 @@ public class BusinessApplicationPane extends JPanel {
 		if (kitchenTableModel.hasUpdate()) {
 			kitchenTableModel.fireTableDataChanged();
 			kitchenTableModel.setUpdated();
+		}
+		if (orderTableModel.hasUpdate()) {
+			orderTableModel.fireTableDataChanged();
+			orderTableModel.setUpdated();
+		}
+		if (droneTableModel.hasUpdate()) {
+			droneTableModel.fireTableDataChanged();
+			droneTableModel.setUpdated();
 		}
 
 	}

@@ -27,6 +27,7 @@ public class BusinessApplication extends JFrame {
 	private AccountManager am;
 	private ServerComms sc;
 	private OrderManager om;
+	private DroneManager dm;
 	
 	public AccountManager getAccountManager() {
 		return this.am;
@@ -36,6 +37,10 @@ public class BusinessApplication extends JFrame {
 		return this.om;
 	}
 	
+	public DroneManager getDroneManager() {
+		return this.dm;
+	}
+	
 	public BusinessApplication() {
 		
 		super("Sushi System - Business Application");
@@ -43,9 +48,11 @@ public class BusinessApplication extends JFrame {
 		sc = new ServerComms(this);
 		new Thread(sc).start();
 		am = new AccountManager();
-		om = new OrderManager();
+		dm = new DroneManager(am);
+		om = new OrderManager(dm);
+
 		
-		mainPane = new BusinessApplicationPane();
+		mainPane = new BusinessApplicationPane(this);
 		this.add(mainPane);
 
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
