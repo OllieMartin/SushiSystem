@@ -11,7 +11,7 @@ public class MenuDish implements Serializable {
 	
 	public MenuDish(StockedDish dish) {
 		
-		this.dish = new Dish(dish.getDish().getName(),dish.getDish().getDescription(),dish.getDish().getPrice());
+		this.dish = new Dish(dish.getDish().getName(),dish.getDish().getDescription(),dish.getDish().getPrice(),dish.getDish().getRecipe());
 		this.stock = dish.getNumberInStock();
 		
 	}

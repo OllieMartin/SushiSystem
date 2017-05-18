@@ -1,4 +1,5 @@
 package business;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,6 +26,9 @@ public class BusinessApplicationPane extends JPanel {
 	private JTabbedPane tabs;
 	private JTable orderTable;
 	private JTable droneTable;
+	
+	private JPanel addButtons;
+	private JPanel others;
 
 	private static KitchenTableModel kitchenTableModel; //TODO
 	public static KitchenTableModel getKitchenTableModel() {
@@ -54,8 +58,16 @@ public class BusinessApplicationPane extends JPanel {
 
 	public BusinessApplicationPane(BusinessApplication ba) {
 		tabs = new JTabbedPane();
-		this.add(tabs);
-		this.setLayout(new GridLayout(3,3));
+		
+		//this.setLayout(new GridLayout(3,1));
+		this.setLayout(new BorderLayout());
+		this.add(tabs,BorderLayout.CENTER);
+		
+		addButtons = new JPanel();
+		addButtons.setLayout(new GridLayout(1,5));
+		others = new JPanel();
+		others.setLayout(new GridLayout(1,1));
+		
 		dishTableModel = new DishTableModel();
 		dishTable = new JTable();
 		dishTable.setModel(dishTableModel);
@@ -89,7 +101,7 @@ public class BusinessApplicationPane extends JPanel {
 			}
 
 		});
-		this.add(addSupplier);
+		addButtons.add(addSupplier);
 
 		addIngredient = new JButton("Add New Ingredient");
 		addIngredient.addActionListener(new ActionListener() {
@@ -100,7 +112,7 @@ public class BusinessApplicationPane extends JPanel {
 			}
 
 		});
-		this.add(addIngredient);
+		addButtons.add(addIngredient);
 
 		addDish = new JButton("Add New Dish");
 		addDish.addActionListener(new ActionListener() {
@@ -111,7 +123,7 @@ public class BusinessApplicationPane extends JPanel {
 			}
 
 		});
-		this.add(addDish);
+		addButtons.add(addDish);
 
 		changeRestockingLevel = new JButton("Change restocking levels");
 		changeRestockingLevel.addActionListener(new ActionListener() {
@@ -122,9 +134,10 @@ public class BusinessApplicationPane extends JPanel {
 			}
 
 		});
-		this.add(changeRestockingLevel);
+		
+		others.add(changeRestockingLevel);
 
-		this.add(addKitchenStaff);
+		addButtons.add(addKitchenStaff);
 		addKitchenStaff.addActionListener(new ActionListener() {
 
 			@Override
@@ -134,7 +147,7 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		
-		this.add(addDrone);
+		addButtons.add(addDrone);
 		addDrone.addActionListener(new ActionListener() {
 
 			@Override
@@ -161,6 +174,9 @@ public class BusinessApplicationPane extends JPanel {
 
 		});
 		t.start();
+		
+		this.add(addButtons,BorderLayout.NORTH);
+		this.add(others,BorderLayout.SOUTH);
 	}
 
 	public void updateTables() {

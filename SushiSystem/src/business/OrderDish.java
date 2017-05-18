@@ -9,7 +9,7 @@ public class OrderDish implements Serializable {
 	private int quantity;
 	
 	public OrderDish(Dish dish, int quantity) {
-		this.dish = new Dish(dish.getName(),dish.getDescription(),dish.getPrice());
+		this.dish = new Dish(dish.getName(),dish.getDescription(),dish.getPrice(),dish.getRecipe());
 		this.quantity = quantity;
 	}
 	

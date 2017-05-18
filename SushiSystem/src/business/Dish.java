@@ -1,6 +1,5 @@
 package business;
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -25,11 +24,11 @@ public class Dish implements Serializable {
 	 * @param description The description of the dish
 	 * @param price The price of the dish
 	 */
-	public Dish(String name, String description, float price) {
+	public Dish(String name, String description, float price, Set<RecipeIngredient> recipe) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
-		this.recipe = new HashSet<RecipeIngredient>();
+		this.recipe = recipe;
 	}
 
 	/**

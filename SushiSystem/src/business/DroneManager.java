@@ -95,6 +95,7 @@ public class DroneManager implements IngredientListener {
 						for (OrderDish d : dot.getOrder().getDishes()) {
 							if (StockedDish.getStockedDish(d.getDish().getName()).getNumberInStock() < d.getQuantity()) {
 								System.out.println("DRONE: dishes not in stock :(");
+								tasks.add(tasks.poll());
 								sufficientStock = false;
 							}
 						}
@@ -106,6 +107,11 @@ public class DroneManager implements IngredientListener {
 						}
 					}
 				} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS){
+					DroneIngredientTask dit = (DroneIngredientTask)task;
+					if (dit.getIngredient().getNumberInStock() >= dit.getIngredient().getRestockingLevel()) {
+						tasks.poll();
+						return null;
+					}
 					return tasks.poll();
 				}
 			}
