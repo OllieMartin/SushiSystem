@@ -13,6 +13,7 @@ import business.OrderDish;
 import comms.ClientComms;
 import comms.LoginMessage;
 import comms.OrderMessage;
+import comms.OrderStatusMessageOrder;
 import comms.RegistrationMessage;
 
 public class Client extends JFrame{
@@ -25,9 +26,14 @@ public class Client extends JFrame{
 	public DishClientTableModel getTableModel() {
 		return this.tableModel;
 	}
+	private OrderStatusClientTableModel orderModel; //TODO maybe pass ref to this instead of whole client?
+	public OrderStatusClientTableModel getOrderModel() {
+		return this.orderModel;
+	}
+
 	private List<MenuDish> dishes;
 	boolean connected;
-	
+
 	public void setConnected(boolean status) {
 		connected = status;
 	}
@@ -51,6 +57,7 @@ public class Client extends JFrame{
 		}
 
 		tableModel = new DishClientTableModel();
+		orderModel = new OrderStatusClientTableModel();
 		new Thread(new Runnable() {
 			//TODO v ugly
 			@Override
@@ -60,6 +67,10 @@ public class Client extends JFrame{
 					if (tableModel.hasUpdate()) {
 						tableModel.fireTableDataChanged();
 						tableModel.setUpdated();
+					}
+					if (orderModel.hasUpdate()) {
+						orderModel.fireTableDataChanged();
+						orderModel.setUpdated();
 					}
 					try {
 						Thread.sleep(200);
@@ -98,6 +109,10 @@ public class Client extends JFrame{
 								tableModel.fireTableDataChanged();
 								tableModel.setUpdated();
 							}
+							if (orderModel.hasUpdate()) {
+								orderModel.fireTableDataChanged();
+								orderModel.setUpdated();
+							}
 							try {
 								Thread.sleep(200);
 							} catch (InterruptedException e) {
@@ -132,6 +147,10 @@ public class Client extends JFrame{
 							if (tableModel.hasUpdate()) {
 								tableModel.fireTableDataChanged();
 								tableModel.setUpdated();
+							}
+							if (orderModel.hasUpdate()) {
+								orderModel.fireTableDataChanged();
+								orderModel.setUpdated();
 							}
 							try {
 								Thread.sleep(200);
@@ -180,14 +199,26 @@ public class Client extends JFrame{
 		}
 
 	}
-	
+
+	public void updateOrderStatus(List<OrderStatusMessageOrder> orders) {
+
+
+		System.out.println("UPDATING ORDER STATUS!");
+		orderModel.clear();
+		for (OrderStatusMessageOrder order : orders) {
+			System.out.println("Here is an order: " + order.getId());
+			orderModel.orderAdded(order);
+		}
+
+	}
+
 	public void placeOrder(List<OrderDish> order) {
 		for (OrderDish d : order) {
 			System.out.println(d.getDish().getName());
 		}
 		comms.sendMessage(new OrderMessage(order));
 	}
-	
+
 	public List<MenuDish> getDishes() {
 		return this.dishes;
 	}

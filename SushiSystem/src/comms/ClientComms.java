@@ -90,6 +90,16 @@ public class ClientComms extends Comms  {
 						case REGISTRATION_SUCCESS:
 							c.successfulRegistration();
 							break;
+						case ORDER:
+							break;
+						case ORDER_STATUS:
+							OrderStatusMessage osm = (OrderStatusMessage)m;
+							System.out.println("Got an order stock message!");
+							for (OrderStatusMessageOrder o : osm.getOrders()) {
+								System.out.println("COMMS GOT: " + o.getId());
+							}
+							c.updateOrderStatus(osm.getOrders());
+							break;
 						default:
 							break;
 						}

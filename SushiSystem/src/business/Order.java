@@ -1,27 +1,42 @@
 package business;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Order {
+public class Order implements Serializable{
 
+	private static final long serialVersionUID = 1L;
 	private List<OrderDish> dishes;
 	private String user;
 	private OrderStatus status;
+	private int id;
+	private static Integer nextId;
+	private float price;
 	
 	public Order(String user, List<OrderDish> dishes) {
 		this.dishes = dishes;
 		this.user = user;
 		this.status = OrderStatus.PLACED;
+		if (nextId == null) {
+			nextId = 0;
+		}
+		synchronized (nextId) {
+			this.id = nextId;
+			nextId++;
+		}
+		price = 0;
+		for (OrderDish dish : dishes) {
+			price = price + dish.getDish().getPrice() * dish.getQuantity();
+		}
+	}
+	
+	public int getId() {
+		return this.id;
 	}
 	
 	public float getPrice() { //TODO Thread safety
 		
-		float price = 0;
-		for (OrderDish od : dishes) {
-			price = price + (od.getDish().getPrice()*od.getQuantity());
-		}
-		
-		return price;
+		return this.price;
 	}
 	
 	public String getUser() {

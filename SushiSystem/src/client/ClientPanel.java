@@ -11,7 +11,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 public class ClientPanel extends JPanel {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private Client client;
@@ -19,9 +19,10 @@ public class ClientPanel extends JPanel {
 	private JTable menu;
 	private JButton placeOrder;
 	private JPanel menuPanel;
-	
+	private JTable orderStatus;
+
 	public ClientPanel(Client client) {
-		
+
 		this.client = client;
 		this.setLayout(new BorderLayout());
 		this.menu = new JTable(this.client.getTableModel());
@@ -35,16 +36,17 @@ public class ClientPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				new OrderFrame(client);
-				
+
 			}
-		
+
 		});
 		menuPanel.add(placeOrder,BorderLayout.SOUTH);
 		tabs.addTab("Menu", menuPanel);
-		tabs.addTab("Order History",null);
-		
+		orderStatus = new JTable(client.getOrderModel());
+		tabs.addTab("Order Status",new JScrollPane(orderStatus));
+
 	}
-	
+
 }

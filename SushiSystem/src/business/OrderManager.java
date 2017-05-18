@@ -57,6 +57,9 @@ public class OrderManager {
 	 */
 	public List<Order> getUserOrders(String user) {
 		if (userOrders.containsKey(user)) {
+			for (Order o : userOrders.get(user)) {
+				System.out.println("I present : " + o.getId());
+			}
 			return userOrders.get(user);
 		} else {
 			return null;

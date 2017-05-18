@@ -10,6 +10,7 @@ import java.util.List;
 
 import business.AccountManager;
 import business.MenuDish;
+import business.Order;
 import business.OrderDish;
 import business.OrderManager;
 import business.StockedDish;
@@ -104,12 +105,19 @@ public class Handler extends Thread {
 
 					while (connected) {
 						try {
-							System.out.println("SENDING DISH STOCK MESSAGE");
 							List<MenuDish> dishes = new ArrayList<MenuDish>();
 							for (StockedDish dish : StockedDish.getStockedDishes()) {
 								dishes.add(new MenuDish(dish));
 							}
 							out.writeObject(new DishStockMessage(dishes));
+							
+							List<Order> orders = om.getUserOrders(name);
+							if (orders != null) {
+								for (Order o : orders) {
+									System.out.println("Handler has: " + o.getId());
+								}
+								out.writeObject(new OrderStatusMessage(orders));
+							}
 							Thread.sleep(5000);
 						} catch (IOException e) {
 							connected = false;
