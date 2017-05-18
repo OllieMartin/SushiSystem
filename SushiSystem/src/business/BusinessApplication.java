@@ -18,10 +18,15 @@ public class BusinessApplication extends JFrame {
 		});
 	}
 	
+	public static BusinessApplication getInstance() {
+		return instance;
+	}
+	
 	private static final int DEFAULT_WIDTH = 1000; // Default width for the main window pixels
 	private static final int DEFAULT_HEIGHT = 500; // Default height for the main window pixels
 	private static final int MINIMUM_WIDTH = 750; // Minimum width for the main window pixels
 	private static final int MINIMUM_HEIGHT = 300; // Minimum height for the main window pixels
+	private static BusinessApplication instance;
 	
 	private BusinessApplicationPane mainPane;
 	private AccountManager am;
@@ -45,6 +50,8 @@ public class BusinessApplication extends JFrame {
 		
 		super("Sushi System - Business Application");
 
+		instance = this;
+		
 		sc = new ServerComms(this);
 		new Thread(sc).start();
 		am = new AccountManager();

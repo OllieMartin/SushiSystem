@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class DroneManager {
+public class DroneManager implements IngredientListener {
 
 	private static final String[] POSTCODES = {"SO162HA","SO162BQ","SO162BW","SO163RT","SO152HT","SO163ST"};
 	private static final float[] DISTANCES = {500,450,360,700,900,400};
@@ -18,15 +18,42 @@ public class DroneManager {
 		drones = new ArrayList<Drone>();
 		tasks = new ConcurrentLinkedQueue<DroneTask>();
 		this.am = am;
+		new Thread(new Runnable() {
 
+			@Override
+			public void run() {
+				
+				List<StockedIngredient> stockedIngredients;
+				
+				while (true) {
+					stockedIngredients = new ArrayList<StockedIngredient>(StockedIngredient.getStockedIngredients());
+					
+					for (StockedIngredient i : stockedIngredients) {
+						checkStock(i);
+					}
+					
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+				
+			}
+			
+			
+		}).start();
+
+	}
+	
+	public void addTask(StockedIngredient ingredient) {
+		tasks.add(new DroneIngredientTask(ingredient,ingredient.getIngredient().getSupplier().getDistance()));
 	}
 
 	public void addTask(Order order) {
 		tasks.add(new DroneOrderTask(order,getDistanceToUser(order.getUser())));
-	}
-
-	public void addTask(StockedIngredient ingredient) {
-		//TODO
 	}
 
 	public float getDistanceToUser(String user) {
@@ -78,11 +105,59 @@ public class DroneManager {
 							return tasks.poll();
 						}
 					}
+				} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS){
+					return tasks.poll();
 				}
 			}
 
 		}
 		return null;
+	}
+	
+	private void checkStock(StockedIngredient i) {
+		synchronized (i) {
+			if (i.getNumberInStock() + i.getNumberBeingRestocked() < i.getRestockingLevel()) {
+				i.incrementNumberBeingRestocked(20);
+				addTask(i);
+			}
+		}
+
+	}
+
+	@Override
+	public void stockIncreased(StockedIngredient i) {
+		checkStock(i);
+		
+	}
+
+	@Override
+	public void stockDecreased(StockedIngredient i) {
+		checkStock(i);
+		
+	}
+
+	@Override
+	public void sufficientStock(StockedIngredient i) {
+		checkStock(i);
+		
+	}
+
+	@Override
+	public void outOfStock(StockedIngredient i) {
+		checkStock(i);
+		
+	}
+
+	@Override
+	public void ingredientAdded(StockedIngredient i) {
+		checkStock(i);
+		
+	}
+
+	@Override
+	public void restockingLevelChanged(StockedIngredient i) {
+		checkStock(i);
+		
 	}
 
 }

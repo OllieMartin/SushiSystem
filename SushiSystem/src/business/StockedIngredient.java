@@ -18,7 +18,7 @@ public class StockedIngredient extends StockedProduct {
 	}
 	
 	private List<IngredientListener> ingredientListeners = new ArrayList<IngredientListener>();
-
+	
 	/**
 	 * Gets the StockedIngredient for a given Ingredient
 	 * 
@@ -65,6 +65,9 @@ public class StockedIngredient extends StockedProduct {
 		if (BusinessApplicationPane.getIngredientTableModel() != null) {
 			this.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
 		}
+		if (BusinessApplication.getInstance().getDroneManager() != null) {
+			this.addListener(BusinessApplication.getInstance().getDroneManager() );//TODO Move static reference location
+		}
 		newAdded();
 	}
 
@@ -83,7 +86,7 @@ public class StockedIngredient extends StockedProduct {
 	public void remove() {
 		if ( stockedIngredients.contains(this) ) stockedIngredients.remove(this);
 	}
-
+	
 	@Override
 	public String toString() {
 		return this.getIngredient().toString();

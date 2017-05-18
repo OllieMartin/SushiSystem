@@ -65,7 +65,9 @@ public class Drone implements Runnable {
 			statusChanged();
 			orderTask.getOrder().setStatus(OrderStatus.TRANSIT);
 
-		} else {
+		} else if (task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
+			this.distanceToDestination = task.getDistance();
+			this.distanceFromBusiness = 0;
 			status = DroneStatus.COLLECTING_INGREDIENT;
 			statusChanged();
 		}
@@ -128,6 +130,43 @@ public class Drone implements Runnable {
 
 			}
 			if (status == DroneStatus.COLLECTING_INGREDIENT) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				distanceToDestination -= flyingSpeed;
+				distanceFromBusiness += flyingSpeed;
+				distanceChanged();
+
+				if (distanceToDestination <= 0) {
+					this.status = DroneStatus.RETURNING_INGREDIENT;
+					statusChanged();
+				}
+
+			}
+			if (status == DroneStatus.RETURNING_INGREDIENT) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				distanceToDestination += flyingSpeed;
+				distanceFromBusiness -= flyingSpeed;
+				distanceChanged();
+				if (distanceFromBusiness <= 0) {
+					DroneIngredientTask ingredientTask = (DroneIngredientTask) this.task;
+					ingredientTask.getIngredient().add(20);
+					ingredientTask.getIngredient().decrementNumberBeingRestocked(20);
+					this.distanceToDestination = -1;
+					this.distanceFromBusiness = -1;
+					this.status = DroneStatus.IDLE;
+					statusChanged();
+					distanceChanged();
+					this.task = null;
+				}
 
 			}
 

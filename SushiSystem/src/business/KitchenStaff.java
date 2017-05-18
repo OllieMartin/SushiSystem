@@ -69,11 +69,11 @@ public class KitchenStaff implements Runnable {
 			if (requiresRestock(dish)) {
 
 				System.out.println("Restocking: " + dish.getDish().getName());
-				
+
 				setBusy(dish.getDish());
 
 				restock(dish);
-				
+
 				setFree();
 
 			}
@@ -111,6 +111,7 @@ public class KitchenStaff implements Runnable {
 			ingredient = it.next();
 
 			if (!sufficientIngredient(ingredient)) {
+				
 				sufficientIngredients = false;
 			}
 
