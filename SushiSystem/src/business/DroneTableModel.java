@@ -55,14 +55,13 @@ public class DroneTableModel extends AbstractTableModel implements DroneListener
 
 		drone = drones.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (drone == null) {
 			return null;
 		}
 
 		switch (columnIndex) {
 		case 0:
-			return drone.getId(); // ID
+			return drone.getId();
 		case 1:
 			return drone.getStatus();
 		case 2:
@@ -72,7 +71,7 @@ public class DroneTableModel extends AbstractTableModel implements DroneListener
 		case 4:
 			return drone.getDistanceFromBusiness();
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
@@ -88,19 +87,16 @@ public class DroneTableModel extends AbstractTableModel implements DroneListener
 
 	@Override
 	public void droneStatusChanged(Drone d) {
-		// TODO Auto-generated method stub
 		update = true;
 	}
 
 	@Override
 	public void droneDistanceChanged(Drone d) {
-		// TODO Auto-generated method stub
 		update = true;
 	}
 
 	@Override
 	public void droneAdded(Drone d) {
-		// TODO Auto-generated method stub
 		addDrone(d);
 		update = true;
 	}

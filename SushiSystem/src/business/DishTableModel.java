@@ -50,7 +50,6 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 
 		dish = stockedDishes.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (dish == null) {
 			return null;
 		}
@@ -63,12 +62,12 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 		case 2:
 			return dish.getRestockingLevel();
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
 	@Override
-	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 
@@ -112,16 +111,10 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 	}
 
 	@Override
-	public void sufficientStock(StockedDish d) {
-		// TODO Auto-generated method stub
-
-	}
+	public void sufficientStock(StockedDish d) {/* Empty */}
 
 	@Override
-	public void outOfStock(StockedDish d) {
-		// TODO Auto-generated method stub
-
-	}
+	public void outOfStock(StockedDish d) {/* Empty */}
 
 	@Override
 	public void dishAdded(StockedDish d) {

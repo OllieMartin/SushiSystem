@@ -11,28 +11,36 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 	//TODO MAKE ALL ADD FRAMES ALSO EDITABLE 
 	private static final long serialVersionUID = 1L;
 
-	JTextField nameTextbox;
-	JTextField descTextbox;
-	JTextField priceTextbox;
-	JTextField restockingTextbox;
-	JButton addButton;
-	JList<String> ingredientsList;
-	DefaultListModel<String> ingredientModel;
+	private JTextField nameTextbox;
+	private JTextField descTextbox;
+	private JTextField priceTextbox;
+	private JTextField restockingTextbox;
+
 	private JPanel ingredientSelector;
+	private JList<String> ingredientsList;
+	private DefaultListModel<String> ingredientModel;
 	private JComboBox<Ingredient> ingredientComboBox;
 	private JSpinner quantity;
 	private Set<RecipeIngredient> ingredients;
+	private JLabel ingredientLabel;
+	private JLabel quantityLabel;
+	private JLabel ingredientListLabel;
+
 	private JButton addIngredient;
+	private JButton addButton;
 
 	public AddDishFrame() {
 
@@ -54,19 +62,32 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 		restockingTextbox.setBorder(BorderFactory.createTitledBorder("Restocking level"));
 
 		ingredientSelector = new JPanel();
-		ingredientSelector.setLayout(new GridLayout(1,2));
+		ingredientSelector.setLayout(new GridLayout(2,2));
 		ingredientComboBox = new JComboBox<Ingredient>();
 		for (StockedIngredient i : StockedIngredient.getStockedIngredients()) {
 			ingredientComboBox.addItem(i.getIngredient()); //TODO Concurrent modification?!
 		}
 		quantity = new JSpinner();
 		quantity.setValue(1);
-		ingredientSelector.add(ingredientComboBox);
-		ingredientSelector.add(quantity);
 
 		ingredients = new HashSet<RecipeIngredient>();
 		addIngredient = new JButton("Add Ingredient");
 
+		if (ingredientComboBox.getItemCount() == 0) {
+			ingredientComboBox.setEnabled(false);
+			quantity.setEnabled(false);
+			addIngredient.setEnabled(false);
+		}
+		ingredientLabel = new JLabel("Add ingredients",SwingConstants.CENTER);
+		quantityLabel = new JLabel("Quantity",SwingConstants.CENTER);
+		ingredientSelector.add(ingredientLabel);
+		ingredientSelector.add(quantityLabel);
+		ingredientSelector.add(ingredientComboBox);
+		ingredientSelector.add(quantity);
+
+
+
+		ingredientListLabel = new JLabel("Added ingredients:",SwingConstants.CENTER);
 
 		ingredientModel = new DefaultListModel<String>();
 		ingredientsList = new JList<String>(ingredientModel);
@@ -75,13 +96,17 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				ingredientModel.addElement(((Ingredient)ingredientComboBox.getSelectedItem()).getName() + " : " + quantity.getValue());
 				ingredients.add(new RecipeIngredient((Ingredient)ingredientComboBox.getSelectedItem(),(int)quantity.getValue()));
+
 				ingredientComboBox.removeItem(ingredientComboBox.getSelectedItem());
 				if (ingredientComboBox.getItemCount() == 0) {
+
 					ingredientComboBox.setEnabled(false);
 					addIngredient.setEnabled(false);
 					quantity.setEnabled(false);
+
 				}
 			}
 
@@ -89,7 +114,7 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 
 		addButton = new JButton("Add");
 
-		this.setLayout(new GridLayout(8,1));
+		this.setLayout(new GridLayout(9,1));
 
 		this.add(nameTextbox);
 		this.add(descTextbox);
@@ -97,6 +122,7 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 		this.add(restockingTextbox);
 		this.add(ingredientSelector);
 		this.add(addIngredient);
+		this.add(ingredientListLabel);
 		this.add(new JScrollPane(ingredientsList));
 		this.add(addButton);
 
@@ -105,9 +131,19 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				Dish d = new Dish(nameTextbox.getText(), descTextbox.getText(), Float.parseFloat(priceTextbox.getText()),ingredients);
-				new StockedDish(d, Integer.parseInt(restockingTextbox.getText()));
-				dispose();
+				try {
+					if (Integer.parseInt(restockingTextbox.getText()) <= 0) {
+						throw new NumberFormatException();
+					}
+					if (Float.parseFloat(priceTextbox.getText()) < 0) {
+						throw new NumberFormatException();
+					}
+					Dish d = new Dish(nameTextbox.getText(), descTextbox.getText(), Float.parseFloat(priceTextbox.getText()),ingredients);
+					new StockedDish(d, Integer.parseInt(restockingTextbox.getText()));
+					dispose();
+				} catch (NumberFormatException e2) {
+					JOptionPane.showMessageDialog(null, "Please sure restocking level is an integer larger than 0 and price is a valid positive number", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 
 		});

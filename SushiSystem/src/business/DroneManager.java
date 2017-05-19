@@ -114,7 +114,6 @@ public class DroneManager implements IngredientListener {
 	public DroneTask getTask() {
 		synchronized (tasks) {
 			if (tasks.peek() != null) {
-				System.out.println("Can see a task");
 				DroneTask task = tasks.peek();
 				if (task.getType() == DroneTaskType.DELIVER_ORDER) {
 					DroneOrderTask dot = (DroneOrderTask)task;
@@ -122,7 +121,6 @@ public class DroneManager implements IngredientListener {
 					synchronized (dot.getOrder().getDishes()) {
 						for (OrderDish d : dot.getOrder().getDishes()) {
 							if (StockedDish.getStockedDish(d.getDish().getName()).getNumberInStock() < d.getQuantity()) {
-								System.out.println("DRONE: dishes not in stock :(");
 								tasks.offer(tasks.poll());
 								sufficientStock = false;
 							}

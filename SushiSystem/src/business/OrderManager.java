@@ -4,49 +4,52 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class OrderManager {
 
 	private List<Order> orders;
 	private Map<String,List<Order>> userOrders;
-	
+
 	private static OrderManager instance;
-	
+
 	public static OrderManager getInstance() {
 		return instance;
 	}
-	
+
 	static {
 		instance = new OrderManager();
 	}
-	
+
 	private OrderManager() {
 		orders = new ArrayList<Order>();
 		userOrders = new HashMap<String,List<Order>>();
 	}
-	
+
 	public void createOrder(String user, List<OrderDish> dishes) {
 		System.out.println("Creating new order!");
 		Order order = new Order(user, dishes);
 		orders.add(order);
-		if (userOrders.containsKey(user)) {
-			getUserOrders(user).add(order);
-		} else {
-			List<Order> newEntry = new ArrayList<Order>();
-			newEntry.add(order);
-			userOrders.put(user, newEntry);
+		synchronized (userOrders) {
+			if (userOrders.containsKey(user)) {
+				getUserOrders(user).add(order);
+			} else {
+				List<Order> newEntry = new ArrayList<Order>();
+				newEntry.add(order);
+				userOrders.put(user, newEntry);
+			}
 		}
 		for (OrderDish dish : dishes) {
-			
+
 			if (StockedDish.isStocked(dish.getDish().getName())) {
 				System.out.println("!");
 				StockedDish.getStockedDish(dish.getDish().getName()).increaseDemand(dish.getQuantity());
 			}
-			
+
 		}
 		DroneManager.getInstance().addTask(order);
 	}
-	
+
 	public List<Order> getWaitingOrders() {
 		List<Order> waiting = new ArrayList<Order>();
 		for (Order o : orders) {
@@ -56,11 +59,11 @@ public class OrderManager {
 		}
 		return waiting;
 	}
-	
+
 	public List<Order> getOrders() {
 		return this.orders;
 	}
-	
+
 	public void loadOrders(List<Order> orders) {
 		this.orders = orders;
 		for (Order o : this.orders) {
@@ -71,32 +74,29 @@ public class OrderManager {
 				o.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
 			}
 			o.newAdded();
-			if (userOrders.containsKey(o.getUser())) {
-				getUserOrders(o.getUser()).add(o);
-			} else {
-				List<Order> newEntry = new ArrayList<Order>();
-				newEntry.add(o);
-				userOrders.put(o.getUser(), newEntry);
+			synchronized (userOrders) {
+				if (userOrders.containsKey(o.getUser())) {
+					getUserOrders(o.getUser()).add(o);
+				} else {
+					List<Order> newEntry = new ArrayList<Order>();
+					newEntry.add(o);
+					userOrders.put(o.getUser(), newEntry);
+				}
 			}
 			DroneManager.getInstance().addTask(o);
 		}
 	}
-	
-	/**
-	 * Can return null //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 * @param user
-	 */
-	public List<Order> getUserOrders(String user) {
-		if (userOrders.containsKey(user)) {
-			for (Order o : userOrders.get(user)) {
-				System.out.println("I present : " + o.getId());
+
+	public List<Order> getUserOrders(String user) throws NoSuchElementException {
+		synchronized (userOrders) {
+			if (userOrders.containsKey(user)) {
+				return userOrders.get(user);
+			} else {
+				return null;
 			}
-			return userOrders.get(user);
-		} else {
-			return null;
 		}
 	}
-	
-	
-	
+
+
+
 }

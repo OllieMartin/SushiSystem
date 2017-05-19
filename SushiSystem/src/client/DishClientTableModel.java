@@ -56,7 +56,6 @@ public class DishClientTableModel extends AbstractTableModel {
 
 		dish = stockedDishes.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (dish == null) {
 			return null;
 		}
@@ -71,12 +70,12 @@ public class DishClientTableModel extends AbstractTableModel {
 		case 3:
 			return dish.getDish().getDescription();
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
 	@Override
-	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 

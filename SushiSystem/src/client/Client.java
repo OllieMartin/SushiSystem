@@ -22,11 +22,11 @@ public class Client extends JFrame{
 
 	private ClientComms comms;
 	private ClientPanel panel;
-	private DishClientTableModel tableModel; //TODO maybe pass ref to this instead of whole client?
+	private DishClientTableModel tableModel;
 	public DishClientTableModel getTableModel() {
 		return this.tableModel;
 	}
-	private OrderStatusClientTableModel orderModel; //TODO maybe pass ref to this instead of whole client?
+	private OrderStatusClientTableModel orderModel;
 	public OrderStatusClientTableModel getOrderModel() {
 		return this.orderModel;
 	}
@@ -50,7 +50,7 @@ public class Client extends JFrame{
 		comms = new ClientComms(this);
 
 		if (!comms.establishConnection()) {
-			System.out.println("ERROR CONNECTING!");
+			System.out.println("Error connecting to server");
 			connected = false;
 		} else {
 			connected = true;
@@ -191,7 +191,6 @@ public class Client extends JFrame{
 
 	public void updateDishStock(List<MenuDish> dishes) {
 
-		System.out.println("UPDATING DISH STOCKS!");
 		tableModel.clear();
 		this.dishes = dishes;
 		for (MenuDish dish : dishes) {
@@ -203,19 +202,14 @@ public class Client extends JFrame{
 	public void updateOrderStatus(List<OrderStatusMessageOrder> orders) {
 
 
-		System.out.println("UPDATING ORDER STATUS!");
 		orderModel.clear();
 		for (OrderStatusMessageOrder order : orders) {
-			System.out.println("Here is an order: " + order.getId());
 			orderModel.orderAdded(order);
 		}
 
 	}
 
 	public void placeOrder(List<OrderDish> order) {
-		for (OrderDish d : order) {
-			System.out.println(d.getDish().getName());
-		}
 		comms.sendMessage(new OrderMessage(order));
 	}
 

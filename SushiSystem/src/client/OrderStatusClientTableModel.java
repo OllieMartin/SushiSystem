@@ -57,7 +57,6 @@ public class OrderStatusClientTableModel extends AbstractTableModel {
 
 		order = orders.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (order == null) {
 			return null;
 		}
@@ -77,12 +76,12 @@ public class OrderStatusClientTableModel extends AbstractTableModel {
 			list = list.substring(0, list.length() - 2);
 			return list;
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
 	@Override
-	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 

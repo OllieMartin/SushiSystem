@@ -4,7 +4,7 @@ public class LoginMessage extends Message {
 
 	private static final long serialVersionUID = 1L;
 	private String user;
-	private String password; //TODO hash-code?
+	private String password;
 
 	public LoginMessage(String user, String password) {
 		super(MessageType.LOGIN);
@@ -24,7 +24,7 @@ public class LoginMessage extends Message {
 	}
 	
 	public String getPassword() {
-		return this.password; //TODO?!
+		return this.password;
 	}
 
 }

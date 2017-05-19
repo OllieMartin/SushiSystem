@@ -60,14 +60,13 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 
 		staff = kitchenStaff.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (staff == null) {
 			return null;
 		}
 
 		switch (columnIndex) {
 		case 0:
-			return "STAFF"; // ID
+			return "STAFF"; //TODO ID
 		case 1:
 			if (kitchenMap.get(staff) != null) {
 				return "Busy";
@@ -81,7 +80,7 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 				return "N/A";
 			}
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 

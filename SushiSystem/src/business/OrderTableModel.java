@@ -50,7 +50,6 @@ public class OrderTableModel extends AbstractTableModel implements OrderListener
 		
 		order = orders.get(rowIndex);
 		
-		//TODO EXCEPTIONS
 		if (order == null) {
 			return null;
 		}
@@ -65,12 +64,12 @@ public class OrderTableModel extends AbstractTableModel implements OrderListener
 		case 3:
 			return order.getPrice();
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
 	@Override
-	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
+	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 

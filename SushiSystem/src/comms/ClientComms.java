@@ -9,30 +9,12 @@ import client.Client;
 
 public class ClientComms extends Comms  {
 
-	protected ObjectOutputStream oout;
-	protected ObjectInputStream oin;
 	Client c;
-	private boolean connected;
-
-	Socket socket;
 	Thread listener;
 
-
-	@Override
-	public boolean sendMessage(Message m) {
-		try {
-			oout.writeObject(m);
-			System.out.println("message sent");
-			return true;
-		} catch (IOException e) {
-			System.out.println("FAIL");
-			return false;
-		}
-	}
-
 	public ClientComms(Client c) {
+		super();
 		this.c = c;
-		connected = false;
 	}
 
 	public boolean establishConnection() {
@@ -42,9 +24,9 @@ public class ClientComms extends Comms  {
 	public boolean establistConnection(String serverAddress) {
 		if (connected) return false;
 		try {
-			socket = new Socket(serverAddress,PORT); //TODO NEEDS TO BE CLOSED SOMEWHERE
-			oout = new ObjectOutputStream(socket.getOutputStream());
-			oin = new ObjectInputStream(socket.getInputStream());
+			socket = new Socket(serverAddress,PORT);
+			out = new ObjectOutputStream(socket.getOutputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 
 			connected = true;
 			listener = new Thread(new Runnable() {
@@ -54,54 +36,45 @@ public class ClientComms extends Comms  {
 					Message m;
 					while (connected) {
 
-						try {
-							m = (Message)oin.readObject();
-						} catch (IOException e) {
+						m = receiveMessage();
+						if (m != null) {
+							switch (m.getType()) {
+							case DISH_STOCK:
+								DishStockMessage dsm = (DishStockMessage)m;
+								c.updateDishStock(dsm.getDishes());
+								break;
+							case LOGIN:
+								break;
+							case LOGIN_SUCCESS:
+								c.successfulLogin();
+								break;
+							case LOGIN_FAILURE:
+								c.failedLogin();
+								break;
+							case LOGIN_REQUEST:
+								break;
+							case REGISTRATION:
+								break;
+							case REGISTRATION_FAILURE:
+								c.invalidRegistration();
+								break;
+							case REGISTRATION_SUCCESS:
+								c.successfulRegistration();
+								break;
+							case ORDER:
+								break;
+							case ORDER_STATUS:
+								OrderStatusMessage osm = (OrderStatusMessage)m;
+								c.updateOrderStatus(osm.getOrders());
+								break;
+							default:
+								break;
+							}
+						} else {
+							if (socket != null) { try { socket.close(); } catch (IOException e2) {/* Empty */} };
 							connected = false;
 							c.setConnected(false);
 							return;
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							return;
-						}
-						System.out.println("Got a message!");
-						switch (m.getType()) {
-						case DISH_STOCK:
-							DishStockMessage dsm = (DishStockMessage)m;
-							System.out.println("Got a dish stock message!");
-							c.updateDishStock(dsm.getDishes());
-							break;
-						case LOGIN:
-							break;
-						case LOGIN_SUCCESS:
-							c.successfulLogin();
-							break;
-						case LOGIN_FAILURE:
-							c.failedLogin();
-							break;
-						case LOGIN_REQUEST:
-							break;
-						case REGISTRATION:
-							break;
-						case REGISTRATION_FAILURE:
-							c.invalidRegistration();
-							break;
-						case REGISTRATION_SUCCESS:
-							c.successfulRegistration();
-							break;
-						case ORDER:
-							break;
-						case ORDER_STATUS:
-							OrderStatusMessage osm = (OrderStatusMessage)m;
-							System.out.println("Got an order stock message!");
-							for (OrderStatusMessageOrder o : osm.getOrders()) {
-								System.out.println("COMMS GOT: " + o.getId());
-							}
-							c.updateOrderStatus(osm.getOrders());
-							break;
-						default:
-							break;
 						}
 
 					}

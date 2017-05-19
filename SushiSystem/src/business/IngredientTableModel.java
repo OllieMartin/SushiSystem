@@ -49,7 +49,6 @@ public class IngredientTableModel extends AbstractTableModel implements Ingredie
 
 		ingredient = stockedIngredients.get(rowIndex);
 
-		//TODO EXCEPTIONS
 		if (ingredient == null) {
 			return null;
 		}
@@ -62,7 +61,7 @@ public class IngredientTableModel extends AbstractTableModel implements Ingredie
 		case 2:
 			return ingredient.getRestockingLevel();
 		default:
-			return null; //TODO EXCEPTIONS
+			return null;
 		}
 	}
 
@@ -111,16 +110,10 @@ public class IngredientTableModel extends AbstractTableModel implements Ingredie
 	}
 
 	@Override
-	public void sufficientStock(StockedIngredient i) {
-		// TODO Auto-generated method stub
-
-	}
+	public void sufficientStock(StockedIngredient i) {/* Empty */}
 
 	@Override
-	public void outOfStock(StockedIngredient i) {
-		// TODO Auto-generated method stub
-
-	}
+	public void outOfStock(StockedIngredient i) {/* Empty */}
 
 	@Override
 	public void ingredientAdded(StockedIngredient i) {

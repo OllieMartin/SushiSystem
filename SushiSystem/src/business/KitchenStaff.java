@@ -49,15 +49,6 @@ public class KitchenStaff implements Runnable, Serializable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			List<StockedDish> stockedDishes = StockedDish.getStockedDishes();
-			synchronized (stockedDishes) {
-
-				for (StockedDish d : stockedDishes) {
-
-					System.out.println(d.getNumberInStock());
-
-				}
-			}
 		}
 
 
@@ -65,7 +56,6 @@ public class KitchenStaff implements Runnable, Serializable {
 
 	private void checkDishStocks() {
 
-		System.out.println("Checking Dish Stock");
 		List<StockedDish> stockedDishes;
 		StockedDish dish;
 
@@ -78,11 +68,8 @@ public class KitchenStaff implements Runnable, Serializable {
 		while (it.hasNext()) {
 
 			dish = it.next();
-			System.out.println("Checking: " + dish.getDish().getName());
 
 			if (requiresRestock(dish)) {
-
-				System.out.println("Restocking: " + dish.getDish().getName());
 
 				setBusy(dish.getDish());
 
@@ -98,7 +85,6 @@ public class KitchenStaff implements Runnable, Serializable {
 	}
 
 	private boolean requiresRestock(StockedDish dish) {
-		System.out.println(dish.getDemand());
 		synchronized(dish) {
 			if (dish.getNumberInStock() + dish.getNumberBeingRestocked() < dish.getRestockingLevel() ||  dish.getNumberInStock() + dish.getNumberBeingRestocked() < dish.getDemand()) {
 				dish.incrementNumberBeingRestocked(1);
@@ -132,36 +118,27 @@ public class KitchenStaff implements Runnable, Serializable {
 		}
 
 		if (sufficientIngredients) {
-			System.out.println("SufficientIngredients!");
 			it = recipeIngredients.iterator();
 			StockedIngredient stocked;
 
 			sufficientIngredients = true;
 			while (it.hasNext()) {
 				ingredient = it.next();
-				System.out.println("i");
 				synchronized (ingredient) {
 					stocked = getStockedIngredient(ingredient.getIngredient());
 					synchronized(stocked) {
-						System.out.println("Old:" + stocked.getNumberInStock());
 						stocked.use(ingredient.getQuantity());
-						System.out.println("New:" + stocked.getNumberInStock());
 					}
 				}
 
 			}
-			System.out.println("i");
 			try {
-				Thread.sleep((new Random().nextInt(40) + 20) *10); //*1000);
-			} catch (InterruptedException e) {System.out.println("!");}
-			System.out.println("ii");
+				Thread.sleep((new Random().nextInt(40) + 20) *10); //TODO *1000);
+			} catch (InterruptedException e) {/* Empty */}
 			synchronized(dish) {
-				System.out.println("Adding a dish!");
 				dish.add(1);
 			}
 
-		} else {
-			System.out.println("Not sufficient ingredients to restock!");
 		}
 
 		dish.decrementNumberBeingRestocked(1);

@@ -4,10 +4,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -15,14 +17,12 @@ public class AddIngredientFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-	JTextField nameTextbox;
-	JLabel nameLabel;
-	JTextField unitTextbox;
-	JLabel unitLabel;
-	JComboBox<Supplier> supplierComboBox;
-	JTextField restockingTextbox;
-	JLabel restockingLabel;
-	JButton addButton;
+	private JTextField nameTextbox;
+	private JTextField unitTextbox;
+	private JComboBox<Supplier> supplierComboBox;
+	private JTextField restockingTextbox;
+	private JButton addButton;
+	private JLabel supplierLabel;
 
 	public AddIngredientFrame() {
 
@@ -31,13 +31,13 @@ public class AddIngredientFrame extends JFrame {
 		this.setMinimumSize(new Dimension(400,300));
 		this.setMaximumSize(new Dimension(400,300));
 
-		nameLabel = new JLabel("Ingredient Name");
-		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		nameTextbox = new JTextField();
+		nameTextbox.setBorder(BorderFactory.createTitledBorder("Ingredient Name"));
 
-		unitLabel = new JLabel("Ingredient Unit");
-		unitLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		unitTextbox = new JTextField();
+		unitTextbox.setBorder(BorderFactory.createTitledBorder("Units of measurement"));
+
+		supplierLabel = new JLabel("Select supplier", SwingConstants.CENTER);
 
 		supplierComboBox = new JComboBox<Supplier>();
 		//TODO THREAD SAFETY
@@ -45,19 +45,16 @@ public class AddIngredientFrame extends JFrame {
 			supplierComboBox.addItem(s);
 		}
 
-		restockingLabel = new JLabel("Restocking Level");
-		restockingLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		restockingTextbox = new JTextField();
+		restockingTextbox.setBorder(BorderFactory.createTitledBorder("Restocking level"));
 
 		addButton = new JButton("Add");
 
-		this.setLayout(new GridLayout(8,1));
-		this.add(nameLabel);
+		this.setLayout(new GridLayout(6,1));
 		this.add(nameTextbox);
-		this.add(unitLabel);
 		this.add(unitTextbox);
+		this.add(supplierLabel);
 		this.add(supplierComboBox);
-		this.add(restockingLabel);
 		this.add(restockingTextbox);
 		this.add(addButton);
 
@@ -65,10 +62,20 @@ public class AddIngredientFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//TODO VALIDATION
-				Ingredient i = new Ingredient(nameTextbox.getText(), unitTextbox.getText(), (Supplier)supplierComboBox.getSelectedItem());
-				new StockedIngredient(i, Integer.parseInt(restockingTextbox.getText()));
-				dispose();
+				if (supplierComboBox.getSelectedItem() != null) {
+					try {
+						if (Integer.parseInt(restockingTextbox.getText()) <= 0) {
+							throw new NumberFormatException();
+						}
+						Ingredient i = new Ingredient(nameTextbox.getText(), unitTextbox.getText(), (Supplier)supplierComboBox.getSelectedItem());
+						new StockedIngredient(i, Integer.parseInt(restockingTextbox.getText()));
+						dispose();
+					} catch (NumberFormatException e2) {
+						JOptionPane.showMessageDialog(null, "Restocking level must be an integer greater than 0", "Information", JOptionPane.INFORMATION_MESSAGE);
+					}
+				} else {
+					JOptionPane.showMessageDialog(null, "Please select a valid supplier", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 
 		});
