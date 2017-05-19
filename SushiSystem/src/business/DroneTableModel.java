@@ -101,4 +101,11 @@ public class DroneTableModel extends AbstractTableModel implements DroneListener
 		update = true;
 	}
 
+	@Override
+	public void droneRemoved(Drone d) {
+		removeDrone(d);
+		update = true;
+		
+	}
+
 }

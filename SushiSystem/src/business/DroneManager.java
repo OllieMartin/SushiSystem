@@ -1,6 +1,7 @@
 package business;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -93,6 +94,21 @@ public class DroneManager implements IngredientListener {
 		Drone drone = new Drone(5);
 		drones.add(drone);
 		new Thread(drone).start();
+	}
+	
+	public void remove(Integer id) {
+		synchronized (drones) {
+			Iterator<Drone> it = drones.iterator();
+			Drone d;
+			while (it.hasNext()) {
+				d = it.next();
+				if (d.getId() == id) {
+					d.enabled = false;
+					it.remove();
+					d.removed();
+				}
+			}
+		}
 	}
 
 	public float getDistanceTo(String postcode) {

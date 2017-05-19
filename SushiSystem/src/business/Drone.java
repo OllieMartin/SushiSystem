@@ -14,6 +14,7 @@ public class Drone implements Runnable, Serializable {
 	private float distanceFromBusiness;
 	private int id;
 	private static Integer nextId;
+	public boolean enabled;
 
 	public static Integer getNextId() {
 		return nextId;
@@ -94,8 +95,9 @@ public class Drone implements Runnable, Serializable {
 
 	@Override
 	public void run() {
+		enabled = true;
 		DroneTask task;
-		while (true) {
+		while (enabled || status != DroneStatus.IDLE) {
 
 			if (status == DroneStatus.IDLE) {
 				task = DroneManager.getInstance().getTask();
@@ -196,6 +198,11 @@ public class Drone implements Runnable, Serializable {
 	public void newAdded() {
 		for (DroneListener l : droneListeners)
 			l.droneAdded(this);
+	}
+	
+	public void removed() {
+		for (DroneListener l : droneListeners)
+			l.droneRemoved(this);
 	}
 
 }

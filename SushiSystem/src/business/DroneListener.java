@@ -10,4 +10,6 @@ public interface DroneListener extends Serializable {
 	
 	void droneAdded(Drone d);
 	
+	void droneRemoved(Drone d);
+	
 }
