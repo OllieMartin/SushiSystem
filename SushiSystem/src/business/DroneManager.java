@@ -7,7 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class DroneManager implements IngredientListener {
-
+	
 	private static final long serialVersionUID = 1L;
 	private static final String[] POSTCODES = {"SO162HA","SO162BQ","SO162BW","SO163RT","SO152HT","SO163ST"};
 	private static final float[] DISTANCES = {500,450,360,700,900,400};
@@ -114,7 +114,6 @@ public class DroneManager implements IngredientListener {
 	public float getDistanceTo(String postcode) {
 
 		for (int i = 0 ; i < POSTCODES.length ; i++ ) {
-			System.out.println(POSTCODES[i] + " " + postcode);
 			if (POSTCODES[i].equals(postcode)) {
 				return DISTANCES[i];
 			}

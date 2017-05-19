@@ -47,9 +47,7 @@ public class Handler extends Comms implements Runnable {
 					return; //Implies connected is terminated
 				}
 
-				System.out.println("Recevied Message");
 				if (m.getType() == MessageType.LOGIN) {
-					System.out.println("Login detected");
 					LoginMessage lm = (LoginMessage)m;
 					if (AccountManager.getInstance().loginUser(lm.getUser(), lm.getPassword())) {
 						sendMessage(new LoginSuccessMessage());
@@ -85,9 +83,6 @@ public class Handler extends Comms implements Runnable {
 
 							List<Order> orders = OrderManager.getInstance().getUserOrders(name);
 							if (orders != null) {
-								for (Order o : orders) {
-									System.out.println("Handler has: " + o.getId());
-								}
 								sendMessage(new OrderStatusMessage(orders));
 							}
 							Thread.sleep(5000);
