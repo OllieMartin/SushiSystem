@@ -21,7 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class AddDishFrame extends JFrame {
-	//TODO MAKE ALL ADD FRAMES ALSO EDITABLE 
+
 	private static final long serialVersionUID = 1L;
 
 	private JTextField nameTextbox;

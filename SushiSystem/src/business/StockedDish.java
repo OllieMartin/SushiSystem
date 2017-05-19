@@ -25,7 +25,7 @@ public class StockedDish extends StockedProduct implements Serializable {
 		for (StockedDish d : stockedDishes) {
 			d.decrementNumberBeingRestocked(d.getNumberBeingRestocked());
 			if (BusinessApplicationPane.getDishTableModel() != null) {
-				d.addListener(BusinessApplicationPane.getDishTableModel() );//TODO Move static reference location
+				d.addListener(BusinessApplicationPane.getDishTableModel() );
 			}
 			d.newAdded();
 		}
@@ -97,7 +97,7 @@ public class StockedDish extends StockedProduct implements Serializable {
 		this.dish = dish;
 		stockedDishes.add(this);
 		if (BusinessApplicationPane.getDishTableModel() != null) {
-			this.addListener(BusinessApplicationPane.getDishTableModel() );//TODO Move static reference location
+			this.addListener(BusinessApplicationPane.getDishTableModel() );
 		}
 		newAdded();
 	}

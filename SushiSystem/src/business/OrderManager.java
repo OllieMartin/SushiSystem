@@ -70,7 +70,7 @@ public class OrderManager {
 					o.setStatus(OrderStatus.PLACED);
 				}
 				if (BusinessApplicationPane.getOrderTableModel() != null) {
-					o.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
+					o.addListener(BusinessApplicationPane.getOrderTableModel() );
 				}
 				o.newAdded();
 				synchronized (userOrders) {

@@ -23,7 +23,7 @@ public class StockedIngredient extends StockedProduct {
 		for (StockedIngredient i : stockedIngredients) {
 			i.decrementNumberBeingRestocked(i.getNumberBeingRestocked());
 			if (BusinessApplicationPane.getIngredientTableModel() != null) {
-				i.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
+				i.addListener(BusinessApplicationPane.getIngredientTableModel() );
 			}
 			i.newAdded();
 		}
@@ -75,7 +75,7 @@ public class StockedIngredient extends StockedProduct {
 		this.ingredient = ingredient;
 		stockedIngredients.add(this);
 		if (BusinessApplicationPane.getIngredientTableModel() != null) {
-			this.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
+			this.addListener(BusinessApplicationPane.getIngredientTableModel() );
 		}
 		this.addListener(DroneManager.getInstance());
 		newAdded();

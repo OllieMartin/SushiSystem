@@ -47,7 +47,7 @@ public class Order implements Serializable{
 			}
 		}
 		if (BusinessApplicationPane.getOrderTableModel() != null) {
-			this.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
+			this.addListener(BusinessApplicationPane.getOrderTableModel() );
 		}
 		newAdded();
 	}

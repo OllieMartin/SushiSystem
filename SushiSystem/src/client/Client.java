@@ -58,8 +58,8 @@ public class Client extends JFrame{
 
 		tableModel = new DishClientTableModel();
 		orderModel = new OrderStatusClientTableModel();
+
 		new Thread(new Runnable() {
-			//TODO v ugly
 			@Override
 			public void run() {
 
@@ -81,7 +81,9 @@ public class Client extends JFrame{
 
 			}
 		}).start();
+
 		panel = new ClientPanel(this);
+
 		this.setContentPane(panel);
 		this.setMinimumSize(new Dimension(600,400));
 		this.setPreferredSize(new Dimension(600,400));

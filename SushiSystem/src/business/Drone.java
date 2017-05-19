@@ -40,7 +40,7 @@ public class Drone implements Runnable, Serializable {
 			nextId++;
 		}
 		if (BusinessApplicationPane.getDroneTableModel() != null) {
-			this.addListener(BusinessApplicationPane.getDroneTableModel() );//TODO Move static reference location
+			this.addListener(BusinessApplicationPane.getDroneTableModel() );
 		}
 		newAdded();
 	}

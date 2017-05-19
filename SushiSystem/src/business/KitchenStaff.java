@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-//TODO Need to be able to remove kitchen staff from system (& update in model ofc)
+
 public class KitchenStaff implements Runnable, Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class KitchenStaff implements Runnable, Serializable {
 		for (KitchenStaff k : kitchenStaff) {
 			k.setFree();
 			if (BusinessApplicationPane.getKitchenTableModel() != null) {
-				k.addListener(BusinessApplicationPane.getKitchenTableModel() );//TODO Move static reference location
+				k.addListener(BusinessApplicationPane.getKitchenTableModel() );
 			}
 			k.newAdded();
 			new Thread(k).start();
@@ -78,7 +78,7 @@ public class KitchenStaff implements Runnable, Serializable {
 		}
 		kitchenStaff.add(this);
 		if (BusinessApplicationPane.getKitchenTableModel() != null) {
-			this.addListener(BusinessApplicationPane.getKitchenTableModel() );//TODO Move static reference location
+			this.addListener(BusinessApplicationPane.getKitchenTableModel() );
 		}
 		newAdded();
 	}
@@ -89,7 +89,7 @@ public class KitchenStaff implements Runnable, Serializable {
 		while (enabled) {
 			checkDishStocks();
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -177,7 +177,7 @@ public class KitchenStaff implements Runnable, Serializable {
 
 			}
 			try {
-				Thread.sleep((new Random().nextInt(40) + 20) *10); //TODO *1000);
+				Thread.sleep((new Random().nextInt(40) + 20) *1000);
 			} catch (InterruptedException e) {/* Empty */}
 			synchronized(dish) {
 				dish.add(1);

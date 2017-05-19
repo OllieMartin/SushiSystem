@@ -62,7 +62,7 @@ public class DroneManager implements IngredientListener {
 		for (Drone d : this.drones) {
 			d.reset();
 			if (BusinessApplicationPane.getDroneTableModel() != null) {
-				d.addListener(BusinessApplicationPane.getDroneTableModel() );//TODO Move static reference location
+				d.addListener(BusinessApplicationPane.getDroneTableModel() );
 			}
 			d.newAdded();
 			new Thread(d).start();
