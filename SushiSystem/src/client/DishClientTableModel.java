@@ -75,6 +75,7 @@ public class DishClientTableModel extends AbstractTableModel {
 		}
 	}
 
+	@Override
 	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
 		return getValueAt(0, c).getClass();
 	}

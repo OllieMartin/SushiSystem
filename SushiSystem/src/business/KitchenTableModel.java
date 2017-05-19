@@ -85,6 +85,7 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 		}
 	}
 
+	@Override
 	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}

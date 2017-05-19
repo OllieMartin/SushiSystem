@@ -69,6 +69,7 @@ public class OrderTableModel extends AbstractTableModel implements OrderListener
 		}
 	}
 
+	@Override
 	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
 		return getValueAt(0, c).getClass();
 	}

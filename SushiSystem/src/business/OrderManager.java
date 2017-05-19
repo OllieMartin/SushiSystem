@@ -85,7 +85,6 @@ public class OrderManager {
 	/**
 	 * Can return null //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	 * @param user
-	 * @return
 	 */
 	public List<Order> getUserOrders(String user) {
 		if (userOrders.containsKey(user)) {

@@ -67,6 +67,7 @@ public class DishTableModel extends AbstractTableModel implements DishListener {
 		}
 	}
 
+	@Override
 	public Class<?> getColumnClass(int c) { //TODO check if the <?> is right
 		return getValueAt(0, c).getClass();
 	}

@@ -66,6 +66,7 @@ public class IngredientTableModel extends AbstractTableModel implements Ingredie
 		}
 	}
 
+	@Override
 	public Class<?> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}

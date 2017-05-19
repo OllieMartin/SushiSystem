@@ -41,6 +41,7 @@ public class Handler extends Thread {
 	}
 	//Set the socket, and the connected server class
 
+	@Override
 	public void run() {
 		try {
 
