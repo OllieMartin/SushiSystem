@@ -16,7 +16,6 @@ public class OrderStatusMessage extends Message {
 		this.orders = new ArrayList<OrderStatusMessageOrder>();
 		for (Order o : orders) {
 			this.orders.add(new OrderStatusMessageOrder(o));
-			System.out.println("The message has: " + o.getId());
 		}
 	}
 	
