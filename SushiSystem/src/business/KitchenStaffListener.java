@@ -10,4 +10,6 @@ public interface KitchenStaffListener extends Serializable {
 	
 	void kitchenStaffAdded(KitchenStaff k);
 	
+	void kitchenStaffRemoved(KitchenStaff k);
+	
 }

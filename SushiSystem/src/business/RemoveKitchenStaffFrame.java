@@ -1,0 +1,69 @@
+package business;
+
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
+
+public class RemoveKitchenStaffFrame extends JFrame {
+
+	private static final long serialVersionUID = 1L;
+	JComboBox<Integer> idComboBox;
+	JLabel optionLabel;
+	JButton deleteButton;
+
+	public RemoveKitchenStaffFrame() {
+		
+		super("Remove kitchen staff member");
+		
+		this.setMinimumSize(new Dimension(400,300));
+		this.setMaximumSize(new Dimension(400,300));
+
+		optionLabel = new JLabel("Select ID of Kitchen Staff to remove");
+		optionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		idComboBox = new JComboBox<Integer>();
+		synchronized (KitchenStaff.getKitchenStaff()) {
+			for (KitchenStaff k : KitchenStaff.getKitchenStaff()) {
+				idComboBox.addItem(k.getId());
+			}
+		}
+		
+		deleteButton = new JButton("Remove selected staff member");
+		if (idComboBox.getItemCount() == 0) {
+			deleteButton.setEnabled(false);
+		}
+		
+		this.setLayout(new GridLayout(3,1));
+
+		this.add(optionLabel);
+		this.add(idComboBox);
+		this.add(deleteButton);
+		
+		deleteButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				if (idComboBox.getSelectedItem() != null) {
+					KitchenStaff.remove((Integer)idComboBox.getSelectedItem());
+					dispose();
+				} else {
+					JOptionPane.showMessageDialog(null, "Please select a valid ID from the combo box", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
+				
+			}
+			
+		});
+		
+		this.setVisible(true);
+		
+	}
+	
+}

@@ -31,7 +31,51 @@ public class KitchenStaff implements Runnable, Serializable {
 
 	private List<KitchenStaffListener> kitchenListeners = new ArrayList<KitchenStaffListener>();
 
+	private int id;
+	private static Integer nextId;
+	public boolean enabled;
+
+	static {
+		nextId = 0;
+	}
+
+	public static void setNextId(Integer id) {
+		synchronized (nextId) {
+			nextId = id;
+		}
+	}
+
+	public static Integer getNextId() {
+		synchronized (nextId) {
+			return nextId;
+		}
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public static void remove(Integer id) {
+		synchronized (kitchenStaff) {
+			Iterator<KitchenStaff> it = kitchenStaff.iterator();
+			KitchenStaff k;
+			while (it.hasNext()) {
+				k = it.next();
+				if (k.getId() == id) {
+					k.enabled = false;
+					it.remove();
+					k.removed();
+				}
+			}
+		}
+	}
+
+
 	public KitchenStaff() {
+		synchronized (nextId) {
+			this.id = nextId;
+			nextId++;
+		}
 		kitchenStaff.add(this);
 		if (BusinessApplicationPane.getKitchenTableModel() != null) {
 			this.addListener(BusinessApplicationPane.getKitchenTableModel() );//TODO Move static reference location
@@ -41,8 +85,8 @@ public class KitchenStaff implements Runnable, Serializable {
 
 	@Override
 	public void run() {
-
-		while (true) {
+		this.enabled = true;
+		while (enabled) {
 			checkDishStocks();
 			try {
 				Thread.sleep(2000);
@@ -210,6 +254,11 @@ public class KitchenStaff implements Runnable, Serializable {
 	public void newAdded() {
 		for (KitchenStaffListener l : kitchenListeners)
 			l.kitchenStaffAdded(this);
+	}
+
+	public void removed() {
+		for (KitchenStaffListener l : kitchenListeners)
+			l.kitchenStaffRemoved(this);
 	}
 
 

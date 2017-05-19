@@ -9,7 +9,7 @@ import javax.swing.table.AbstractTableModel;
 public class KitchenTableModel extends AbstractTableModel implements KitchenStaffListener {
 
 	private static final long serialVersionUID = 1L;
-	private String[] columnNames = {"Kitchen Staff", "Status", "Dish Preparing"};
+	private String[] columnNames = {"Staff ID", "Status", "Dish Preparing"};
 	private List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 	private Map<KitchenStaff,Dish> kitchenMap = new HashMap<KitchenStaff,Dish>();
 	boolean update;
@@ -66,7 +66,7 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 
 		switch (columnIndex) {
 		case 0:
-			return "STAFF"; //TODO ID
+			return staff.getId();
 		case 1:
 			if (kitchenMap.get(staff) != null) {
 				return "Busy";
@@ -113,6 +113,11 @@ public class KitchenTableModel extends AbstractTableModel implements KitchenStaf
 	public void kitchenStaffAdded(KitchenStaff k) {
 		addStaff(k);
 
+	}
+
+	@Override
+	public void kitchenStaffRemoved(KitchenStaff k) {
+		removeStaff(k);
 	}
 
 }

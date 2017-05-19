@@ -27,6 +27,7 @@ public class BusinessApplicationPane extends JPanel {
 	private JTable orderTable;
 	private JTable droneTable;
 	private JButton saveButton;
+	private JButton removeKitchenStaffButton;
 	
 	private JPanel addButtons;
 	private JPanel others;
@@ -66,7 +67,7 @@ public class BusinessApplicationPane extends JPanel {
 		addButtons = new JPanel();
 		addButtons.setLayout(new GridLayout(1,5));
 		others = new JPanel();
-		others.setLayout(new GridLayout(1,2));
+		others.setLayout(new GridLayout(1,3));
 		
 		dishTableModel = new DishTableModel();
 		dishTable = new JTable();
@@ -188,6 +189,20 @@ public class BusinessApplicationPane extends JPanel {
 		});
 		
 		others.add(saveButton);
+		
+		removeKitchenStaffButton = new JButton("Remove kitchen staff");
+		removeKitchenStaffButton.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				new RemoveKitchenStaffFrame();
+				
+			}
+	
+		});
+		
+		others.add(removeKitchenStaffButton);
 		
 		this.add(addButtons,BorderLayout.NORTH);
 		this.add(others,BorderLayout.SOUTH);

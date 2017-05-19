@@ -22,11 +22,7 @@ public class DataPersistence {
 		instance = new DataPersistence();
 	}
 
-	private DataPersistence() {
-
-
-
-	}
+	private DataPersistence() {/* Empty */}
 
 	public void saveAll(String filename) {
 
@@ -37,7 +33,13 @@ public class DataPersistence {
 			ObjectOutputStream out = new ObjectOutputStream(saveFile);
 
 			synchronized (KitchenStaff.getKitchenStaff()) {
-				out.writeObject(KitchenStaff.getKitchenStaff());
+				if (KitchenStaff.getNextId() == null) {
+					KitchenStaff.setNextId(0);
+				}
+				synchronized (KitchenStaff.getNextId()) {
+					out.writeObject(KitchenStaff.getKitchenStaff());
+					out.writeObject(KitchenStaff.getNextId());
+				}
 			}
 			synchronized (DroneManager.getInstance().getDrones()) {
 				if (Drone.getNextId() == null) {
@@ -96,6 +98,7 @@ public class DataPersistence {
 			ObjectInputStream in = new ObjectInputStream(loadFile);
 
 			KitchenStaff.loadKitchenStaff((List<KitchenStaff>)in.readObject());
+			KitchenStaff.setNextId((Integer)in.readObject());
 			DroneManager.getInstance().loadDrones((List<Drone>)in.readObject());
 			Drone.setNextId((Integer)in.readObject());
 			
