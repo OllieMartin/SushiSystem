@@ -31,27 +31,27 @@ public class BusinessApplicationPane extends JPanel {
 	private JPanel addButtons;
 	private JPanel others;
 
-	private static KitchenTableModel kitchenTableModel; //TODO
+	private static KitchenTableModel kitchenTableModel;
 	public static KitchenTableModel getKitchenTableModel() {
 		return kitchenTableModel;
 	}
 
-	private static DishTableModel dishTableModel; //TODO
+	private static DishTableModel dishTableModel;
 	public static DishTableModel getDishTableModel() {
 		return dishTableModel;
 	}
 
-	private static IngredientTableModel ingredientTableModel; //TODO
+	private static IngredientTableModel ingredientTableModel;
 	public static IngredientTableModel getIngredientTableModel() {
 		return ingredientTableModel;
 	}
 	
-	private static OrderTableModel orderTableModel; //TODO
+	private static OrderTableModel orderTableModel;
 	public static OrderTableModel getOrderTableModel() {
 		return orderTableModel;
 	}
 	
-	private static DroneTableModel droneTableModel; //TODO
+	private static DroneTableModel droneTableModel;
 	public static DroneTableModel getDroneTableModel() {
 		return droneTableModel;
 	}
@@ -60,7 +60,6 @@ public class BusinessApplicationPane extends JPanel {
 	public BusinessApplicationPane(BusinessApplication ba) {
 		tabs = new JTabbedPane();
 		
-		//this.setLayout(new GridLayout(3,1));
 		this.setLayout(new BorderLayout());
 		this.add(tabs,BorderLayout.CENTER);
 		

@@ -50,16 +50,7 @@ public class Drone implements Runnable, Serializable {
 
 	public void reset() {
 		this.status = DroneStatus.IDLE;
-		if (this.task != null) {
-			if (this.task.getType() == DroneTaskType.DELIVER_ORDER) {
-				DroneOrderTask orderTask = (DroneOrderTask) task;
-				orderTask.getOrder().setStatus(OrderStatus.PLACED);
-			}
-			if (this.task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
-				//DroneIngredientTask ingredientTask = (DroneIngredientTask) this.task;
-				//ingredientTask.getIngredient().decrementNumberBeingRestocked(20);
-			}
-		}
+		statusChanged();
 		this.setTask(null);
 		this.distanceToDestination = -1;
 		this.distanceFromBusiness = -1;
@@ -113,18 +104,12 @@ public class Drone implements Runnable, Serializable {
 				}
 				try {
 					Thread.sleep(200);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {/* Empty */}
 			}
 			if (status == DroneStatus.DELIVERING_ORDER) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {/* Empty */}
 				distanceToDestination -= flyingSpeed;
 				distanceFromBusiness += flyingSpeed;
 				distanceChanged();
@@ -140,10 +125,7 @@ public class Drone implements Runnable, Serializable {
 			if (status == DroneStatus.RETURNING_ORDER) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {/* Empty */}
 				distanceToDestination += flyingSpeed;
 				distanceFromBusiness -= flyingSpeed;
 				distanceChanged();
@@ -160,10 +142,7 @@ public class Drone implements Runnable, Serializable {
 			if (status == DroneStatus.COLLECTING_INGREDIENT) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {/* Empty */}
 				distanceToDestination -= flyingSpeed;
 				distanceFromBusiness += flyingSpeed;
 				distanceChanged();
@@ -177,10 +156,7 @@ public class Drone implements Runnable, Serializable {
 			if (status == DroneStatus.RETURNING_INGREDIENT) {
 				try {
 					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				} catch (InterruptedException e) {/* Empty */}
 				distanceToDestination += flyingSpeed;
 				distanceFromBusiness -= flyingSpeed;
 				distanceChanged();

@@ -40,9 +40,11 @@ public class AddIngredientFrame extends JFrame {
 		supplierLabel = new JLabel("Select supplier", SwingConstants.CENTER);
 
 		supplierComboBox = new JComboBox<Supplier>();
-		//TODO THREAD SAFETY
-		for (Supplier s : Supplier.getSuppliers()) {
-			supplierComboBox.addItem(s);
+
+		synchronized (Supplier.getSuppliers() ) {
+			for (Supplier s : Supplier.getSuppliers()) {
+				supplierComboBox.addItem(s);
+			}
 		}
 
 		restockingTextbox = new JTextField();

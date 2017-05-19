@@ -26,14 +26,14 @@ public abstract class StockedProduct implements Serializable {
 	 * Get the re-stocking level of the product in stock
 	 * @return The re-stocking level of the product
 	 */
-	public int getRestockingLevel() {
+	public synchronized int getRestockingLevel() {
 		return this.restockingLevel;
 	}
 
 	/**
 	 * Set the re-stocking level of the product in stock
 	 */
-	public void setRestockingLevel(int restockingLevel) {
+	public synchronized void setRestockingLevel(int restockingLevel) {
 		this.restockingLevel = restockingLevel;
 	}
 

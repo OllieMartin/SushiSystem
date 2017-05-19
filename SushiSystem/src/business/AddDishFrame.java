@@ -20,7 +20,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
+public class AddDishFrame extends JFrame {
 	//TODO MAKE ALL ADD FRAMES ALSO EDITABLE 
 	private static final long serialVersionUID = 1L;
 
@@ -64,8 +64,10 @@ public class AddDishFrame extends JFrame { //TODO VALIDATION ON ALL ADD FRAME
 		ingredientSelector = new JPanel();
 		ingredientSelector.setLayout(new GridLayout(2,2));
 		ingredientComboBox = new JComboBox<Ingredient>();
-		for (StockedIngredient i : StockedIngredient.getStockedIngredients()) {
-			ingredientComboBox.addItem(i.getIngredient()); //TODO Concurrent modification?!
+		synchronized (StockedIngredient.getStockedIngredients()) {
+			for (StockedIngredient i : StockedIngredient.getStockedIngredients()) {
+				ingredientComboBox.addItem(i.getIngredient());
+			}
 		}
 		quantity = new JSpinner();
 		quantity.setValue(1);

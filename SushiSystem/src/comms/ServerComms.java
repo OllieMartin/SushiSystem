@@ -19,20 +19,16 @@ public class ServerComms implements Runnable {
 					new Thread(new Handler(listener.accept(),this)).start();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Connection error occurred");
 			} finally {
-				//Will also occur if an interrupt occurs to end execution
 				try {
 					listener.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} //Prevent memory leaks!
+					System.err.println("Error occurred closing listener");
+				}
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.err.println("Could not bind to port, close any applications already running");
 		}
 
 	}

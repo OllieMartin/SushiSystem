@@ -77,11 +77,10 @@ public class DataPersistence {
 			out.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
+			System.err.println("File has been deleted, could not save data");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error occurred saving data");
 		}
 
 
@@ -113,14 +112,11 @@ public class DataPersistence {
 			in.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("File does not exist, could not load data");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error occurred reading saved data");
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.err.println("Error occured casting data, could be an old version, try deleting the saved file and trying again");
 		}
 	}
 	

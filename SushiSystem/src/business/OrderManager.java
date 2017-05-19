@@ -65,25 +65,29 @@ public class OrderManager {
 	}
 
 	public void loadOrders(List<Order> orders) {
-		this.orders = orders;
-		for (Order o : this.orders) {
-			if (o.getStatus() == OrderStatus.TRANSIT) {
-				o.setStatus(OrderStatus.PLACED);
-			}
-			if (BusinessApplicationPane.getOrderTableModel() != null) {
-				o.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
-			}
-			o.newAdded();
-			synchronized (userOrders) {
-				if (userOrders.containsKey(o.getUser())) {
-					getUserOrders(o.getUser()).add(o);
-				} else {
-					List<Order> newEntry = new ArrayList<Order>();
-					newEntry.add(o);
-					userOrders.put(o.getUser(), newEntry);
+		synchronized (this.orders) {
+			this.orders = orders;
+			for (Order o : this.orders) {
+				if (o.getStatus() == OrderStatus.TRANSIT) {
+					o.setStatus(OrderStatus.PLACED);
+				}
+				if (BusinessApplicationPane.getOrderTableModel() != null) {
+					o.addListener(BusinessApplicationPane.getOrderTableModel() );//TODO Move static reference location
+				}
+				o.newAdded();
+				synchronized (userOrders) {
+					if (userOrders.containsKey(o.getUser())) {
+						getUserOrders(o.getUser()).add(o);
+					} else {
+						List<Order> newEntry = new ArrayList<Order>();
+						newEntry.add(o);
+						userOrders.put(o.getUser(), newEntry);
+					}
+				}
+				if (o.getStatus() == OrderStatus.PLACED) {
+					DroneManager.getInstance().addTask(o);
 				}
 			}
-			DroneManager.getInstance().addTask(o);
 		}
 	}
 

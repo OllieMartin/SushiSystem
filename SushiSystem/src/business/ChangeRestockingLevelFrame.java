@@ -8,13 +8,14 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 public class ChangeRestockingLevelFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	JComboBox<ProductType> optionComboBox;
 	JLabel optionLabel;
 	JComboBox<StockedProduct> productComboBox;
@@ -41,21 +42,24 @@ public class ChangeRestockingLevelFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				productComboBox.removeAllItems();
-				//TODO THREAD SAFETY
 				if (optionComboBox.getSelectedItem().equals(ProductType.INGREDIENT)) {
-					for (StockedIngredient i : StockedIngredient.getStockedIngredients()) {
+					synchronized (StockedIngredient.getStockedIngredients()) {
+						for (StockedIngredient i : StockedIngredient.getStockedIngredients()) {
 
-						productComboBox.addItem(i);
+							productComboBox.addItem(i);
 
+						}
 					}
 				} else {
-					for (StockedDish d : StockedDish.getStockedDishes()) {
+					synchronized (StockedDish.getStockedDishes()) {
+						for (StockedDish d : StockedDish.getStockedDishes()) {
 
-						productComboBox.addItem(d);
+							productComboBox.addItem(d);
 
+						}
 					}
 				}
-				
+
 				productComboBox.setEnabled(true);
 				restockingLevelTextbox.setEnabled(false);
 				saveButton.setEnabled(false);
@@ -63,7 +67,7 @@ public class ChangeRestockingLevelFrame extends JFrame {
 			}
 
 		});
-		
+
 		productLabel = new JLabel("Select product to change restocking level of");
 		productLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		productComboBox = new JComboBox<StockedProduct>();
@@ -74,8 +78,6 @@ public class ChangeRestockingLevelFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 
 				restockingLevelTextbox.setText(Integer.toString(((StockedProduct)productComboBox.getSelectedItem()).getRestockingLevel()));
-				//TODO THREAD SAFETY
-				
 				restockingLevelTextbox.setEnabled(true);
 				saveButton.setEnabled(true);
 
@@ -105,9 +107,16 @@ public class ChangeRestockingLevelFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-//TODO validation
-				((StockedProduct)productComboBox.getSelectedItem()).setRestockingLevel(Integer.parseInt(restockingLevelTextbox.getText()));
-				dispose();
+				try {
+					if (Integer.parseInt(restockingLevelTextbox.getText()) <= 0) {
+						throw new NumberFormatException();
+					}
+
+					((StockedProduct)productComboBox.getSelectedItem()).setRestockingLevel(Integer.parseInt(restockingLevelTextbox.getText()));
+					dispose();
+				} catch (NumberFormatException e2) {
+					JOptionPane.showMessageDialog(null, "Please sure restocking level is an integer larger than 0", "Information", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 
 		});
