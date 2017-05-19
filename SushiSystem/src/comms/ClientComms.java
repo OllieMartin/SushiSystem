@@ -13,7 +13,7 @@ public class ClientComms extends Comms  {
 	protected ObjectInputStream oin;
 	Client c;
 	private boolean connected;
-	private static final int PORT = 25410;
+
 	Socket socket;
 	Thread listener;
 

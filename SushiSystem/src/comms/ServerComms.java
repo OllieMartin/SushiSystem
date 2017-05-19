@@ -5,17 +5,15 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.HashSet;
 
-import business.BusinessApplication;
+import business.AccountManager;
+import business.OrderManager;
 
 public class ServerComms extends Comms implements Runnable {
 
-	protected final int PORT = 25410; //Connection port to server
 	protected HashSet<String> clientNames = new HashSet<String>(); //All of the connected user names (duplicates not allowed)
 	protected HashSet<PrintWriter> clientWriters = new HashSet<PrintWriter>(); //All the writer objects to each client used to distribute messages
-	private BusinessApplication ba;
 
-	public ServerComms(BusinessApplication ba) {
-		this.ba = ba;
+	public ServerComms() {
 	}
 
 	@Override
@@ -33,7 +31,7 @@ public class ServerComms extends Comms implements Runnable {
 
 			try {
 				while (true) {
-					new Handler(listener.accept(),this,ba.getAccountManager(),ba.getOrderManager()).start();
+					new Thread(new Handler(listener.accept(),this,AccountManager.getInstance(),OrderManager.getInstance())).start();
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

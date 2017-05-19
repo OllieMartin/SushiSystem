@@ -9,19 +9,23 @@ public class AccountManager {
 	private Map<String,UserAccount> registeredUsers;
 	private Set<UserAccount> online;
 	private static AccountManager instance;
-	
+
 	public Map<String,UserAccount> getRegisteredUsers() {
-		return this.registeredUsers;
+		synchronized (this.registeredUsers) {
+			return this.registeredUsers;
+		}
 	}
-	
+
 	public void loadRegisteredUsers(Map<String,UserAccount> registeredUsers) {
-		this.registeredUsers = registeredUsers;
+		synchronized (this.registeredUsers) {
+			this.registeredUsers = registeredUsers;
+		}
 	}
-	
+
 	public static AccountManager getInstance() {
 		return instance;
 	}
-	
+
 	static {
 		instance = new AccountManager();
 	}
@@ -34,43 +38,55 @@ public class AccountManager {
 	}
 
 	public void logoutUser(String user) {
-		if (existsUser(user)) {
-			online.remove(registeredUsers.get(user));
+		synchronized (online) {
+			if (existsUser(user)) {
+				online.remove(registeredUsers.get(user));
+			}
 		}
 	}
 
 	public boolean loginUser(String user, String password) {
-		if (existsUser(user) && verifyPassword(user,password)) {
-			online.add(registeredUsers.get(user));
-			return true;
-		} else {
-			return false;
+		synchronized (registeredUsers) {
+			synchronized (online) {
+				if (existsUser(user) && verifyPassword(user,password)) {
+					online.add(registeredUsers.get(user));
+					return true;
+				} else {
+					return false;
+				}
+			}
 		}
 	}
 
 	public boolean existsUser(String user) {
-		if (registeredUsers.containsKey(user)) {
-			return true;
-		} else {
-			return false;
+		synchronized (registeredUsers) {
+			if (registeredUsers.containsKey(user)) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
-	//TODO THREADSAFETY!
+
 	public UserAccount getUser(String user) {
-		if (existsUser(user)) {
-			return registeredUsers.get(user);
-		} else {
-			return null;
+		synchronized (registeredUsers) {
+			if (existsUser(user)) {
+				return registeredUsers.get(user);
+			} else {
+				return null;
+			}
 		}
 	}
 
 	public boolean verifyPassword(String user, String password) {
-		if (existsUser(user)) {
-			if (registeredUsers.get(user).checkPassword(password)) {
-				return true;
+		synchronized (registeredUsers) {
+			if (existsUser(user)) {
+				if (registeredUsers.get(user).checkPassword(password)) {
+					return true;
+				}
 			}
+			return false;
 		}
-		return false;
 	}
 
 	public boolean registerUser(String user, String password, String address, String postcode) {

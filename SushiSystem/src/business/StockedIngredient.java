@@ -77,9 +77,7 @@ public class StockedIngredient extends StockedProduct {
 		if (BusinessApplicationPane.getIngredientTableModel() != null) {
 			this.addListener(BusinessApplicationPane.getIngredientTableModel() );//TODO Move static reference location
 		}
-		if (BusinessApplication.getInstance().getDroneManager() != null) {
-			this.addListener(BusinessApplication.getInstance().getDroneManager() );//TODO Move static reference location
-		}
+		this.addListener(DroneManager.getInstance());
 		newAdded();
 	}
 

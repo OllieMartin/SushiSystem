@@ -20,7 +20,7 @@ import business.StockedDish;
  * @author Oliver
  *
  */
-public class Handler extends Thread {
+public class Handler extends Comms implements Runnable {
 
 	protected String name;
 	protected Socket socket;
@@ -174,5 +174,11 @@ public class Handler extends Thread {
 			} catch (IOException e) {
 			}
 		}
+	}
+
+	@Override
+	public boolean sendMessage(Message m) {
+		// TODO Auto-generated method stub
+		return false;
 	}      
 }

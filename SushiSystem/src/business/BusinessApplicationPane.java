@@ -153,7 +153,7 @@ public class BusinessApplicationPane extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ba.getDroneManager().addDrone();
+				DroneManager.getInstance().addDrone();
 			}
 
 		});

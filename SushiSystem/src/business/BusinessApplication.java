@@ -8,13 +8,17 @@ import comms.ServerComms;
 
 public class BusinessApplication extends JFrame {
 
+	public static void main(String args[]) {
+		BusinessApplication.getInstance();
+	}
+	
 	private static final long serialVersionUID = 1L;
 
-	public static void main(String args[]) {
+	static {
 		SwingUtilities.invokeLater( new Runnable() { 
 			@Override
 			public void run() {  
-				new BusinessApplication();
+				instance = new BusinessApplication();
 			}
 		});
 	}
@@ -27,38 +31,18 @@ public class BusinessApplication extends JFrame {
 	private static final int DEFAULT_HEIGHT = 500; // Default height for the main window pixels
 	private static final int MINIMUM_WIDTH = 750; // Minimum width for the main window pixels
 	private static final int MINIMUM_HEIGHT = 300; // Minimum height for the main window pixels
-	private static BusinessApplication instance;
+	private static BusinessApplication instance; // The instance of the application for the singleton pattern
 	
 	private BusinessApplicationPane mainPane;
-	private AccountManager am;
-	private ServerComms sc;
-	private OrderManager om;
-	private DroneManager dm;
 	
-	public AccountManager getAccountManager() {
-		return this.am;
-	}
-	
-	public OrderManager getOrderManager() {
-		return this.om;
-	}
-	
-	public DroneManager getDroneManager() {
-		return this.dm;
-	}
-	
-	public BusinessApplication() {
+	private BusinessApplication() {
 		
 		super("Sushi System - Business Application");
-
-		instance = this;
 		
-		sc = new ServerComms(this);
-		new Thread(sc).start();
-		am = AccountManager.getInstance();
-		dm = DroneManager.getInstance();
-		om = OrderManager.getInstance();
-
+		new Thread(new ServerComms()).start();
+		AccountManager.getInstance();
+		DroneManager.getInstance();
+		OrderManager.getInstance();
 		
 		mainPane = new BusinessApplicationPane(this);
 		this.add(mainPane);
