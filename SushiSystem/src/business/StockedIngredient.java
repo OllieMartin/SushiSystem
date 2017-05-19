@@ -11,12 +11,13 @@ import java.util.NoSuchElementException;
  */
 public class StockedIngredient extends StockedProduct {
 
+	private static final long serialVersionUID = 1L;
 	private static List<StockedIngredient> stockedIngredients = new ArrayList<StockedIngredient>();
 
 	public static List<StockedIngredient> getStockedIngredients() {
 		return stockedIngredients;
 	}
-	
+
 	public static void loadStockedIngredients(List<StockedIngredient> ingredients) {
 		stockedIngredients = ingredients;
 		for (StockedIngredient i : stockedIngredients) {
@@ -27,9 +28,9 @@ public class StockedIngredient extends StockedProduct {
 			i.newAdded();
 		}
 	}
-	
+
 	private List<IngredientListener> ingredientListeners = new ArrayList<IngredientListener>();
-	
+
 	/**
 	 * Gets the StockedIngredient for a given Ingredient
 	 * 
@@ -97,12 +98,12 @@ public class StockedIngredient extends StockedProduct {
 	public void remove() {
 		if ( stockedIngredients.contains(this) ) stockedIngredients.remove(this);
 	}
-	
+
 	@Override
 	public String toString() {
 		return this.getIngredient().toString();
 	}
-	
+
 	@Override
 	public synchronized void use(int numberToUse) {
 		super.use(numberToUse);
@@ -111,24 +112,24 @@ public class StockedIngredient extends StockedProduct {
 			stockOut();
 		}
 	}
-	
+
 	@Override
 	public synchronized void add(int numberToAdd) {
 		super.add(numberToAdd);
 		stockIncreased();
-		
+
 		if (getNumberInStock() == getRestockingLevel()) {
 			stockSufficient();
 		}
 	}
-	
+
 	@Override
 	public void setRestockingLevel(int restockingLevel) {
 		super.setRestockingLevel(restockingLevel);
 		restockingLevelChanged();
-		
+
 	}
-	
+
 	public void addListener(IngredientListener toAdd) {
 		ingredientListeners.add(toAdd);
 	}
@@ -147,22 +148,22 @@ public class StockedIngredient extends StockedProduct {
 		for (IngredientListener l : ingredientListeners)
 			l.ingredientAdded(this);
 	}
-	
+
 	public void stockSufficient() {
 		for (IngredientListener l : ingredientListeners)
 			l.sufficientStock(this);
 	}
-	
+
 	public void stockOut() {
 		for (IngredientListener l : ingredientListeners)
 			l.outOfStock(this);
 	}
-	
+
 	public void restockingLevelChanged() {
 		for (IngredientListener l : ingredientListeners)
 			l.restockingLevelChanged(this);
 	}
-	
-	
+
+
 
 }

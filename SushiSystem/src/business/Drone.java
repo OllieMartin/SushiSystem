@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Drone implements Runnable, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private int flyingSpeed;
 	private DroneStatus status;
 	private DroneTask task;
@@ -13,11 +14,11 @@ public class Drone implements Runnable, Serializable {
 	private float distanceFromBusiness;
 	private int id;
 	private static Integer nextId;
-	
+
 	public static Integer getNextId() {
 		return nextId;
 	}
-	
+
 	public static void setNextId(Integer id) {
 		nextId = id;
 	}
@@ -49,13 +50,15 @@ public class Drone implements Runnable, Serializable {
 
 	public void reset() {
 		this.status = DroneStatus.IDLE;
-		if (this.task.getType() == DroneTaskType.DELIVER_ORDER) {
-			DroneOrderTask orderTask = (DroneOrderTask) task;
-			orderTask.getOrder().setStatus(OrderStatus.PLACED);
-		}
-		if (this.task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
-			DroneIngredientTask ingredientTask = (DroneIngredientTask) this.task;
-			ingredientTask.getIngredient().decrementNumberBeingRestocked(20);
+		if (this.task != null) {
+			if (this.task.getType() == DroneTaskType.DELIVER_ORDER) {
+				DroneOrderTask orderTask = (DroneOrderTask) task;
+				orderTask.getOrder().setStatus(OrderStatus.PLACED);
+			}
+			if (this.task.getType() == DroneTaskType.FETCH_INGREDIENTS) {
+				//DroneIngredientTask ingredientTask = (DroneIngredientTask) this.task;
+				//ingredientTask.getIngredient().decrementNumberBeingRestocked(20);
+			}
 		}
 		this.setTask(null);
 		this.distanceToDestination = -1;

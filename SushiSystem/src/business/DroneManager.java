@@ -7,12 +7,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class DroneManager implements IngredientListener {
 
+	private static final long serialVersionUID = 1L;
 	private static final String[] POSTCODES = {"SO162HA","SO162BQ","SO162BW","SO163RT","SO152HT","SO163ST"};
 	private static final float[] DISTANCES = {500,450,360,700,900,400};
 	private List<Drone> drones;
 	private Queue<DroneTask> tasks;
 	private static DroneManager instance;
-	
+
 	public static DroneManager getInstance() {
 		return instance;
 	}
@@ -20,7 +21,7 @@ public class DroneManager implements IngredientListener {
 	static {
 		instance = new DroneManager();
 	}
-	
+
 	private DroneManager() {
 
 		drones = new ArrayList<Drone>();
@@ -29,37 +30,36 @@ public class DroneManager implements IngredientListener {
 
 			@Override
 			public void run() {
-				
+
 				List<StockedIngredient> stockedIngredients;
-				
+
 				while (true) {
 					stockedIngredients = new ArrayList<StockedIngredient>(StockedIngredient.getStockedIngredients());
-					
+
 					for (StockedIngredient i : stockedIngredients) {
 						checkStock(i);
-						System.out.println("!!!!!!!!!!!!!!!!!!!!! CHECKING STOCK : : : : : : ");
 					}
-					
+
 					try {
 						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 				}
-				
+
 			}
-			
-			
+
+
 		}).start();
 
 	}
-	
+
 	public List<Drone> getDrones() {
 		return this.drones;
 	}
-	
+
 	public void loadDrones(List<Drone> drones) {
 		this.drones = drones;
 		for (Drone d : this.drones) {
@@ -71,13 +71,17 @@ public class DroneManager implements IngredientListener {
 			new Thread(d).start();
 		}
 	}
-	
+
 	public void addTask(StockedIngredient ingredient) {
-		tasks.add(new DroneIngredientTask(ingredient,ingredient.getIngredient().getSupplier().getDistance()));
+		synchronized (tasks) {
+			tasks.offer(new DroneIngredientTask(ingredient,ingredient.getIngredient().getSupplier().getDistance()));
+		}
 	}
 
 	public void addTask(Order order) {
-		tasks.add(new DroneOrderTask(order,getDistanceToUser(order.getUser())));
+		synchronized (tasks) {
+			tasks.offer(new DroneOrderTask(order,getDistanceToUser(order.getUser())));
+		}
 	}
 
 	public float getDistanceToUser(String user) {
@@ -119,7 +123,7 @@ public class DroneManager implements IngredientListener {
 						for (OrderDish d : dot.getOrder().getDishes()) {
 							if (StockedDish.getStockedDish(d.getDish().getName()).getNumberInStock() < d.getQuantity()) {
 								System.out.println("DRONE: dishes not in stock :(");
-								tasks.add(tasks.poll());
+								tasks.offer(tasks.poll());
 								sufficientStock = false;
 							}
 						}
@@ -144,12 +148,14 @@ public class DroneManager implements IngredientListener {
 		}
 		return null;
 	}
-	
+
 	private void checkStock(StockedIngredient i) {
 		synchronized (i) {
-			if (i.getNumberInStock() + i.getNumberBeingRestocked() < i.getRestockingLevel()) {
-				i.incrementNumberBeingRestocked(20);
-				addTask(i);
+			synchronized (tasks) {
+				if (i.getNumberInStock() + i.getNumberBeingRestocked() < i.getRestockingLevel()) {
+					i.incrementNumberBeingRestocked(20);
+					addTask(i);
+				}
 			}
 		}
 
@@ -158,37 +164,37 @@ public class DroneManager implements IngredientListener {
 	@Override
 	public void stockIncreased(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 	@Override
 	public void stockDecreased(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 	@Override
 	public void sufficientStock(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 	@Override
 	public void outOfStock(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 	@Override
 	public void ingredientAdded(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 	@Override
 	public void restockingLevelChanged(StockedIngredient i) {
 		checkStock(i);
-		
+
 	}
 
 }

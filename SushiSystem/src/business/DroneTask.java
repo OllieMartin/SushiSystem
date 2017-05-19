@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public abstract class DroneTask implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
 	private DroneTaskType type;
 	private float distance;
 

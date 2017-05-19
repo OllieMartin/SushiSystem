@@ -6,16 +6,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
-//TODO More than one make a dish at a time
+
 //TODO Need to be able to remove kitchen staff from system (& update in model ofc)
 public class KitchenStaff implements Runnable, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private static List<KitchenStaff> kitchenStaff = new ArrayList<KitchenStaff>();
 
 	public static List<KitchenStaff> getKitchenStaff() {
 		return kitchenStaff;
 	}
-	
+
 	public static void loadKitchenStaff(List<KitchenStaff> staff) {
 		kitchenStaff = staff;
 		for (KitchenStaff k : kitchenStaff) {
@@ -124,7 +125,7 @@ public class KitchenStaff implements Runnable, Serializable {
 			ingredient = it.next();
 
 			if (!sufficientIngredient(ingredient)) {
-				
+
 				sufficientIngredients = false;
 			}
 

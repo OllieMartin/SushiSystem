@@ -36,24 +36,6 @@ public class DataPersistence {
 			FileOutputStream saveFile = new FileOutputStream(file);
 			ObjectOutputStream out = new ObjectOutputStream(saveFile);
 
-			synchronized (AccountManager.getInstance().getRegisteredUsers()) {
-				out.writeObject(AccountManager.getInstance().getRegisteredUsers());
-			}
-			synchronized (StockedDish.getStockedDishes()) {
-				out.writeObject(StockedDish.getStockedDishes());
-			}
-			synchronized (StockedIngredient.getStockedIngredients()) {
-				out.writeObject(StockedIngredient.getStockedIngredients());
-			}
-			synchronized (OrderManager.getInstance().getOrders()) {
-				if (Order.getNextId() == null) {
-					Order.setNextId(0);
-				}
-				synchronized (Order.getNextId()) {
-					out.writeObject(OrderManager.getInstance().getOrders());
-					out.writeObject(Order.getNextId());
-				}
-			}
 			synchronized (KitchenStaff.getKitchenStaff()) {
 				out.writeObject(KitchenStaff.getKitchenStaff());
 			}
@@ -66,9 +48,31 @@ public class DataPersistence {
 					out.writeObject(Drone.getNextId());
 				}
 			}
+			
 			synchronized (Supplier.getSuppliers()) {
 				out.writeObject(Supplier.getSuppliers());
 			}
+			synchronized (StockedIngredient.getStockedIngredients()) {
+				out.writeObject(StockedIngredient.getStockedIngredients());
+			}
+			synchronized (StockedDish.getStockedDishes()) {
+				out.writeObject(StockedDish.getStockedDishes());
+			}
+			
+			synchronized (AccountManager.getInstance().getRegisteredUsers()) {
+				out.writeObject(AccountManager.getInstance().getRegisteredUsers());
+			}
+			synchronized (OrderManager.getInstance().getOrders()) {
+				if (Order.getNextId() == null) {
+					Order.setNextId(0);
+				}
+				synchronized (Order.getNextId()) {
+					out.writeObject(OrderManager.getInstance().getOrders());
+					out.writeObject(Order.getNextId());
+				}
+			}
+			
+			
 
 			out.close();
 
@@ -92,15 +96,19 @@ public class DataPersistence {
 			FileInputStream loadFile = new FileInputStream(file);
 			ObjectInputStream in = new ObjectInputStream(loadFile);
 
-			AccountManager.getInstance().loadRegisteredUsers((Map<String,UserAccount>)in.readObject());
-			StockedDish.loadStockedDishes((List<StockedDish>)in.readObject());
-			StockedIngredient.loadStockedIngredients((List<StockedIngredient>)in.readObject());
-			OrderManager.getInstance().loadOrders((List<Order>)in.readObject());
-			Order.setNextId((Integer)in.readObject());
 			KitchenStaff.loadKitchenStaff((List<KitchenStaff>)in.readObject());
 			DroneManager.getInstance().loadDrones((List<Drone>)in.readObject());
 			Drone.setNextId((Integer)in.readObject());
+			
 			Supplier.loadSuppliers((List<Supplier>) in.readObject());
+			StockedIngredient.loadStockedIngredients((List<StockedIngredient>)in.readObject());
+			StockedDish.loadStockedDishes((List<StockedDish>)in.readObject());
+			
+			AccountManager.getInstance().loadRegisteredUsers((Map<String,UserAccount>)in.readObject());
+			OrderManager.getInstance().loadOrders((List<Order>)in.readObject());
+			Order.setNextId((Integer)in.readObject());
+			
+			
 			
 			in.close();
 
